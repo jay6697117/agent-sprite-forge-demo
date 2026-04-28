@@ -109,6 +109,23 @@ export class FarmingSystem {
   }
 
   private findPlot(point: { x: number; y: number }) {
-    return this.plots.find((plot) => plot.contains(point));
+    const containingPlot = this.plots.find((plot) => plot.contains(point));
+    if (containingPlot) {
+      return containingPlot;
+    }
+
+    let bestPlot: CropPlot | undefined;
+    let bestDistance = Number.POSITIVE_INFINITY;
+    for (const plot of this.plots) {
+      const centerX = plot.bounds.centerX;
+      const centerY = plot.bounds.centerY;
+      const distance = Phaser.Math.Distance.Between(point.x, point.y, centerX, centerY);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestPlot = plot;
+      }
+    }
+
+    return bestDistance <= 58 ? bestPlot : undefined;
   }
 }

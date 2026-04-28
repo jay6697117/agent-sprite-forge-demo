@@ -1,0 +1,92 @@
+{
+  "mapSize": {
+    "width": 1280,
+    "height": 960
+  },
+  "spawn": {
+    "x": 640,
+    "y": 760
+  },
+  "blockers": [
+    {
+      "id": "north-boundary",
+      "type": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 24
+    },
+    {
+      "id": "south-boundary",
+      "type": "rect",
+      "x": 0,
+      "y": 936,
+      "w": 1280,
+      "h": 24
+    },
+    {
+      "id": "west-boundary",
+      "type": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 960
+    },
+    {
+      "id": "east-boundary",
+      "type": "rect",
+      "x": 1256,
+      "y": 0,
+      "w": 24,
+      "h": 960
+    },
+    {
+      "id": "farmhouse",
+      "type": "rect",
+      "x": 112,
+      "y": 170,
+      "w": 196,
+      "h": 92
+    },
+    {
+      "id": "seed-stall",
+      "type": "rect",
+      "x": 756,
+      "y": 390,
+      "w": 128,
+      "h": 52
+    },
+    {
+      "id": "pond",
+      "type": "ellipse",
+      "x": 940,
+      "y": 682,
+      "rx": 160,
+      "ry": 96
+    },
+    {
+      "id": "tree-oak-1",
+      "type": "ellipse",
+      "x": 1040,
+      "y": 250,
+      "rx": 32,
+      "ry": 22
+    },
+    {
+      "id": "tree-oak-2",
+      "type": "ellipse",
+      "x": 1120,
+      "y": 340,
+      "rx": 32,
+      "ry": 22
+    },
+    {
+      "id": "tree-oak-3",
+      "type": "ellipse",
+      "x": 1060,
+      "y": 850,
+      "rx": 32,
+      "ry": 22
+    }
+  ]
+}

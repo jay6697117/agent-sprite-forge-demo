@@ -1,0 +1,58 @@
+{
+  "props": [
+    {
+      "id": "farmhouse",
+      "image": "assets/props/farm/farmhouse.png",
+      "x": 210,
+      "y": 250,
+      "w": 220,
+      "h": 180,
+      "sortY": 250
+    },
+    {
+      "id": "seed_stall",
+      "image": "assets/props/farm/seed_stall.png",
+      "x": 820,
+      "y": 430,
+      "w": 140,
+      "h": 88,
+      "sortY": 430
+    },
+    {
+      "id": "tree_oak_1",
+      "image": "assets/props/farm/tree_oak.png",
+      "x": 1040,
+      "y": 250,
+      "w": 104,
+      "h": 132,
+      "sortY": 250
+    },
+    {
+      "id": "tree_oak_2",
+      "image": "assets/props/farm/tree_oak.png",
+      "x": 1120,
+      "y": 340,
+      "w": 104,
+      "h": 132,
+      "sortY": 340
+    },
+    {
+      "id": "tree_oak_3",
+      "image": "assets/props/farm/tree_oak.png",
+      "x": 1060,
+      "y": 850,
+      "w": 104,
+      "h": 132,
+      "sortY": 850
+    },
+    {
+      "id": "mailbox",
+      "image": "assets/props/farm/mailbox.png",
+      "x": 330,
+      "y": 315,
+      "w": 44,
+      "h": 50,
+      "sortY": 315
+    }
+  ]
+}

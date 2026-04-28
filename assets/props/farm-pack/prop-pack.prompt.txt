@@ -1,0 +1,21 @@
+Create exactly one 3x3 pixel-art prop sheet for a top-down 2D RPG farm map.
+
+Each cell contains one separate static environmental prop from this list, in row-major order:
+1. small cozy farmhouse with red-brown roof, cream walls, centered front door, no text
+2. leafy green farm tree with visible short brown trunk base
+3. small NPC seed stall with canvas awning and crates, no text and no vendor character
+4. horizontal wooden fence segment, simple farm fence
+5. open wooden farm gate segment
+6. small rural mailbox on a post, no letters or readable text
+7. notice board / bulletin board on posts, blank board with no text
+8. small flower shrub cluster
+9. cut log stump
+
+All props share the same original cozy farm palette, top-down RPG camera angle, and pixel scale.
+Mostly front-facing top-down RPG object view: upright objects are vertical and centered, with only a small visible top face. Avoid strong isometric diagonal rotation.
+Full object visible, centered in its own cell, crisp dark pixel outlines.
+Each prop must fit fully inside the central 45% to 55% of its cell with generous flat magenta gutters on all four sides.
+No prop, branch, roof, sign, smoke, sparkle, shadow, or fragment may touch or cross a cell edge.
+Background must be 100% solid flat #FF00FF magenta in every cell, no gradients, no texture, no shadows, no floor plane.
+No text, labels, UI, watermark, numbers, arrows, borders, or visible grid lines.
+Original design only; do not copy Stardew Valley or any existing commercial game assets.

@@ -3,3 +3,12 @@ __pycache__/
 .DS_Store
 outputs/
 .venv/
+node_modules
+node_modules/
+dist/
+build/
+*.log
+*.env
+.env.*
+*.bak
+*.tmp

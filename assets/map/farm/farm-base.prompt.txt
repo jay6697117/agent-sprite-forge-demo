@@ -1,0 +1,35 @@
+Create an original ground-only top-down 2D pixel-art RPG farm map for a cozy farming MVP.
+
+Hard output requirements:
+- Final image requested size: 1280x960 pixels.
+- 40x30 tile layout, visual tile scale 32 pixels.
+- Top-down / slight 3/4 RPG readability, but terrain is flat ground only.
+- Original design only; do not copy, imitate, or recreate Stardew Valley maps, layouts, sprites, palettes, or recognizable assets.
+
+This is a BASE GROUND MAP ONLY.
+Include only terrain and ground-level details:
+- bright spring grass field with subtle pixel grass variation
+- compact dirt footpaths, including a bottom-center spawn path
+- a flat dirt-and-stone foundation pad for a farmhouse in the upper-left area, but no house object
+- a 5x4 tilled field area with 20 clearly visible 32x32 soil squares around map center-left
+- a flat small market pad for an NPC seed stall on the right side, but no stall object
+- an oval blue pond embedded in the ground in the lower-right area
+- light ground detail: pebble clusters, flowers, worn grass, soft shore pixels, path edging
+- flat empty grass pads where trees, fences, mailbox, notice board, seed stall, and farmhouse props will be placed later
+
+Do NOT include any tall or collidable props:
+- no buildings, no farmhouse object, no roofs, no walls, no fences, no trees, no trunks, no stalls, no signs, no mailbox, no NPCs, no animals, no UI, no text, no labels, no watermark.
+
+Composition guide:
+- Leave map edges as grass with enough empty space for prop blockers.
+- Keep roads walkable and easy to trace.
+- Dirt path starts at bottom center spawn around (640,820), branches to farmhouse pad upper-left, crop field center-left, market pad right-center, and pond lower-right.
+- Farmhouse foundation pad roughly x=140 y=100 w=270 h=170.
+- Field soil grid roughly x=448 y=448, 5 columns by 4 rows, each tile visually 32x32 with small 8px gaps or borders.
+- Market stall flat pad roughly x=865 y=365 w=220 h=135.
+- Pond roughly centered at x=970 y=680, oval about 235x155.
+
+Style:
+- crisp pixel art, coherent 32px tile scale, warm friendly palette, soft shadows painted only on terrain features.
+- No camera tilt beyond readable top-down RPG terrain.
+- No black border around the full image.

@@ -22,7 +22,7 @@ type HouseSceneData = {
 };
 
 const BedsidePosition = { x: 142, y: 264 };
-const SleepPosition = { x: 124, y: 174 };
+const SleepPosition = { x: 124, y: 138 };
 const WakePosition = { x: 152, y: 266 };
 const SleepZzzPosition = { x: 148, y: 132 };
 const BlanketNormalPosition = { x: 124, y: 166 };
@@ -152,8 +152,8 @@ export class HouseScene extends Phaser.Scene {
       .then(() => {
         player.facing = sleepFacing;
         player.setPosition(SleepPosition.x, SleepPosition.y);
-        player.setDepth(SleepPosition.y + 120);
         player.setSleepPose(true, sleepFacing);
+        player.setDepth(SleepPosition.y + 220);
         this.showMessage('盖好被子，准备睡觉。');
         return this.coverBlanket();
       })

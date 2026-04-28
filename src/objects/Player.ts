@@ -143,12 +143,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.clearTint();
     if (active) {
       this.setTexture(AssetKey.player, idleFrame[sleepFacing]);
+      this.setCrop(0, 0, 96, 52);
       this.setAngle(0);
-      this.setAlpha(0.82);
+      this.setAlpha(1);
       this.setScale(this.baseScaleX * 0.86, this.baseScaleY * 1.02);
       return;
     }
 
+    this.setCrop(0, 0, 96, 96);
     this.setAngle(0);
     this.setAlpha(1);
     this.setScale(this.baseScaleX, this.baseScaleY);

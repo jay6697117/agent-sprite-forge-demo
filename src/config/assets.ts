@@ -18,7 +18,7 @@ export const AssetKey = {
 } as const;
 
 export const AssetPath = {
-  farmBase: '/assets/map/farm_v4/farm-base.png',
+  farmBase: '/assets/map/farm_v5/farm-base.png',
   farmPreview: '/assets/map/farm_v2/farm-layered-preview.png',
   player: '/assets/sprites/player_farmer_v2/action_sheet/sheet-transparent.png',
   playerWalk: '/assets/sprites/player_farmer_v2/walk/sheet-transparent.png',

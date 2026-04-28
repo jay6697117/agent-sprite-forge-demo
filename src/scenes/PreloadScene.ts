@@ -185,10 +185,10 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private createAnimations() {
-    this.createWalkAnimation('down', [0, 1, 2, 3]);
-    this.createWalkAnimation('left', [4, 5, 6, 7]);
-    this.createWalkAnimation('right', [8, 9, 10, 11]);
-    this.createWalkAnimation('up', [12, 13, 14, 15]);
+    this.createWalkAnimation('down', [0]);
+    this.createWalkAnimation('left', [4]);
+    this.createWalkAnimation('right', [8]);
+    this.createWalkAnimation('up', [12]);
   }
 
   private createWalkAnimation(direction: string, frames: number[]) {

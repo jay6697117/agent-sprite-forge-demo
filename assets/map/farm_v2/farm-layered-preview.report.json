@@ -1,0 +1,87 @@
+{
+  "base": "assets/map/farm_v2/farm-base.png",
+  "placements": "data/farm-v2-props.json",
+  "output": "assets/map/farm_v2/farm-layered-preview.png",
+  "pasted": [
+    {
+      "id": "tree_forest",
+      "image": "assets/props/farm_v2/tree_oak.png",
+      "left": 1048,
+      "top": 31,
+      "w": 165,
+      "h": 174,
+      "sortY": 205,
+      "layer": "props"
+    },
+    {
+      "id": "farmhouse",
+      "image": "assets/props/farm_v2/farmhouse.png",
+      "left": 55,
+      "top": 58,
+      "w": 270,
+      "h": 260,
+      "sortY": 318,
+      "layer": "props"
+    },
+    {
+      "id": "notice_board",
+      "image": "assets/props/farm_v2/notice_board.png",
+      "left": 535,
+      "top": 162,
+      "w": 150,
+      "h": 156,
+      "sortY": 318,
+      "layer": "props"
+    },
+    {
+      "id": "seed_shop",
+      "image": "assets/props/farm_v2/seed_shop.png",
+      "left": 885,
+      "top": 38,
+      "w": 290,
+      "h": 282,
+      "sortY": 320,
+      "layer": "props"
+    },
+    {
+      "id": "fence_north",
+      "image": "assets/props/farm_v2/fence_pack.png",
+      "left": 265,
+      "top": 404,
+      "w": 410,
+      "h": 96,
+      "sortY": 500,
+      "layer": "props"
+    },
+    {
+      "id": "well",
+      "image": "assets/props/farm_v2/well.png",
+      "left": 654,
+      "top": 370,
+      "w": 112,
+      "h": 155,
+      "sortY": 525,
+      "layer": "props"
+    },
+    {
+      "id": "tree_pond",
+      "image": "assets/props/farm_v2/tree_oak.png",
+      "left": 735,
+      "top": 480,
+      "w": 190,
+      "h": 200,
+      "sortY": 680,
+      "layer": "props"
+    },
+    {
+      "id": "fence_south",
+      "image": "assets/props/farm_v2/fence_pack.png",
+      "left": 265,
+      "top": 739,
+      "w": 410,
+      "h": 96,
+      "sortY": 835,
+      "layer": "props"
+    }
+  ]
+}

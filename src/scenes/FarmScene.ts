@@ -108,7 +108,7 @@ export class FarmScene extends Phaser.Scene {
     this.state = SaveSystem.load(zones.fieldPlots, collision.spawn);
     this.inventory = new InventorySystem(this.state);
     this.player = new Player(this, this.state.player.x, this.state.player.y, this.state.player.facing, (this.state.upgrades.shoeLevel - 1) * 18);
-    new Npc(this, 820, 438);
+    new Npc(this, 1000, 390);
 
     const collisionSystem = new CollisionSystem(this, collision);
     this.physics.add.collider(this.player, collisionSystem.group);

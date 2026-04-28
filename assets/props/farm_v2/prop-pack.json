@@ -5,7 +5,7 @@
   "threshold": 100,
   "edge_threshold": 150,
   "component_mode": "largest",
-  "component_padding": 10,
+  "component_padding": 12,
   "min_component_area": 100,
   "edge_touch_margin": 0,
   "accepted": [
@@ -19,34 +19,34 @@
       "source_box": [
         0,
         0,
-        341,
+        512,
         512
       ],
       "component_mode": "largest",
-      "component_count": 2,
-      "selected_component_area": 70015,
+      "component_count": 1,
+      "selected_component_area": 75198,
       "selected_component_bbox": [
-        75,
-        56,
-        333,
-        386
+        140,
+        111,
+        462,
+        419
       ],
       "crop_bbox": [
-        75,
-        56,
-        333,
-        386
+        140,
+        111,
+        462,
+        419
       ],
       "padded_crop_bbox": [
-        65,
-        46,
-        333,
-        396
+        128,
+        99,
+        474,
+        431
       ],
-      "edge_touch": true,
+      "edge_touch": false,
       "output_size": [
-        268,
-        350
+        346,
+        332
       ],
       "status": "accepted",
       "image": "assets/props/farm_v2/farmhouse/prop.png"
@@ -59,36 +59,36 @@
         1
       ],
       "source_box": [
-        341,
+        512,
         0,
-        682,
+        1024,
         512
       ],
       "component_mode": "largest",
-      "component_count": 4,
-      "selected_component_area": 27464,
+      "component_count": 1,
+      "selected_component_area": 97052,
       "selected_component_bbox": [
-        0,
-        78,
-        131,
-        379
+        88,
+        95,
+        448,
+        444
       ],
       "crop_bbox": [
-        0,
-        78,
-        131,
-        379
+        88,
+        95,
+        448,
+        444
       ],
       "padded_crop_bbox": [
-        0,
-        68,
-        141,
-        389
+        76,
+        83,
+        460,
+        456
       ],
-      "edge_touch": true,
+      "edge_touch": false,
       "output_size": [
-        141,
-        321
+        384,
+        373
       ],
       "status": "accepted",
       "image": "assets/props/farm_v2/seed-shop/prop.png"
@@ -101,36 +101,36 @@
         2
       ],
       "source_box": [
-        682,
+        1024,
         0,
-        1023,
+        1536,
         512
       ],
       "component_mode": "largest",
-      "component_count": 2,
-      "selected_component_area": 62470,
+      "component_count": 1,
+      "selected_component_area": 51839,
       "selected_component_bbox": [
-        0,
-        44,
-        239,
-        378
+        84,
+        144,
+        337,
+        408
       ],
       "crop_bbox": [
-        0,
-        44,
-        239,
-        378
+        84,
+        144,
+        337,
+        408
       ],
       "padded_crop_bbox": [
-        0,
-        34,
-        249,
-        388
+        72,
+        132,
+        349,
+        420
       ],
-      "edge_touch": true,
+      "edge_touch": false,
       "output_size": [
-        249,
-        354
+        277,
+        288
       ],
       "status": "accepted",
       "image": "assets/props/farm_v2/notice-board/prop.png"
@@ -145,34 +145,34 @@
       "source_box": [
         0,
         512,
-        341,
+        512,
         1024
       ],
       "component_mode": "largest",
-      "component_count": 2,
-      "selected_component_area": 35312,
+      "component_count": 1,
+      "selected_component_area": 44660,
       "selected_component_bbox": [
-        151,
-        173,
-        333,
-        455
+        191,
+        46,
+        401,
+        346
       ],
       "crop_bbox": [
-        151,
-        173,
-        333,
-        455
+        191,
+        46,
+        401,
+        346
       ],
       "padded_crop_bbox": [
-        141,
-        163,
-        333,
-        465
+        179,
+        34,
+        413,
+        358
       ],
-      "edge_touch": true,
+      "edge_touch": false,
       "output_size": [
-        192,
-        302
+        234,
+        324
       ],
       "status": "accepted",
       "image": "assets/props/farm_v2/well/prop.png"
@@ -185,36 +185,36 @@
         1
       ],
       "source_box": [
-        341,
         512,
-        682,
+        512,
+        1024,
         1024
       ],
       "component_mode": "largest",
-      "component_count": 5,
-      "selected_component_area": 11003,
+      "component_count": 1,
+      "selected_component_area": 73249,
       "selected_component_bbox": [
-        211,
-        294,
-        333,
-        430
+        82,
+        16,
+        430,
+        383
       ],
       "crop_bbox": [
-        211,
-        294,
-        333,
-        430
+        82,
+        16,
+        430,
+        383
       ],
       "padded_crop_bbox": [
-        201,
-        284,
-        333,
-        440
+        70,
+        4,
+        442,
+        395
       ],
-      "edge_touch": true,
+      "edge_touch": false,
       "output_size": [
-        132,
-        156
+        372,
+        391
       ],
       "status": "accepted",
       "image": "assets/props/farm_v2/tree-oak/prop.png"
@@ -227,48 +227,41 @@
         2
       ],
       "source_box": [
-        682,
+        1024,
         512,
-        1023,
+        1536,
         1024
       ],
       "component_mode": "largest",
       "component_count": 2,
-      "selected_component_area": 21251,
+      "selected_component_area": 32745,
       "selected_component_bbox": [
-        0,
-        294,
-        230,
-        431
+        51,
+        133,
+        389,
+        296
       ],
       "crop_bbox": [
-        0,
-        294,
-        230,
-        431
+        51,
+        133,
+        389,
+        296
       ],
       "padded_crop_bbox": [
-        0,
-        284,
-        240,
-        441
+        39,
+        121,
+        401,
+        308
       ],
-      "edge_touch": true,
+      "edge_touch": false,
       "output_size": [
-        240,
-        157
+        362,
+        187
       ],
       "status": "accepted",
       "image": "assets/props/farm_v2/fence-pack/prop.png"
     }
   ],
   "rejected": [],
-  "edge_touch_props": [
-    "farmhouse",
-    "seed-shop",
-    "notice-board",
-    "well",
-    "tree-oak",
-    "fence-pack"
-  ]
+  "edge_touch_props": []
 }

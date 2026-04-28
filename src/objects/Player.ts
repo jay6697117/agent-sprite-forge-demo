@@ -29,6 +29,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   selectedTool: ToolId = 'turnip_seed';
   private readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private readonly keys: PlayerKeys;
+  private baseScaleX = 1;
+  private baseScaleY = 1;
   private speed: number;
   private actionLocked = false;
 
@@ -68,8 +70,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     });
 
     this.setOrigin(0.5, 0.5);
-    this.setSize(20, 12);
-    this.setOffset(14, 34);
+    this.setDisplaySize(64, 64);
+    this.baseScaleX = this.scaleX;
+    this.baseScaleY = this.scaleY;
+    this.setSize(24, 14);
+    this.setOffset(36, 74);
     this.setCollideWorldBounds(true);
     this.setDepth(this.y);
   }
@@ -80,7 +85,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     const body = this.body as Phaser.Physics.Arcade.Body;
     if (this.actionLocked) {
       body.setVelocity(0, 0);
-      this.setDepth(this.y + 18);
+      this.setDepth(this.y + 28);
       return;
     }
 
@@ -107,11 +112,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.setFrame(idleFrame[this.facing]);
     }
 
-    this.setDepth(this.y + 18);
+    this.setDepth(this.y + 28);
   }
 
   getFeetPoint() {
-    return { x: this.x, y: this.y + 18 };
+    return { x: this.x, y: this.y + 28 };
   }
 
   get isActing() {
@@ -129,10 +134,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.actionLocked = true;
     this.anims.stop();
-    this.setFrame(idleFrame[this.facing]);
+    this.setFrame(this.actionFrame(action));
     this.setTint(actionTint[action]);
 
-    const tweenConfig = this.actionTween(action, duration);
+    const tweenConfig = this.actionTween(action);
     this.scene.tweens.add({
       targets: this,
       ...tweenConfig,
@@ -144,9 +149,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.time.delayedCall(duration, () => {
       this.actionLocked = false;
       this.clearTint();
-      this.setScale(1);
+      this.setScale(this.baseScaleX, this.baseScaleY);
       this.setAngle(0);
       this.setAlpha(1);
+      this.setFrame(idleFrame[this.facing]);
       onComplete();
     });
     return true;
@@ -208,19 +214,24 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  private actionTween(action: PlayerAction, duration: number) {
+  private actionFrame(action: PlayerAction) {
+    const column = action === 'plant' ? 1 : action === 'water' ? 2 : action === 'harvest' ? 3 : 0;
+    return idleFrame[this.facing] + column;
+  }
+
+  private actionTween(action: PlayerAction) {
     if (action === 'plant') {
-      return { scaleX: 1.08, scaleY: 0.86 };
+      return { scaleX: this.baseScaleX * 1.08, scaleY: this.baseScaleY * 0.86 };
     }
     if (action === 'water') {
       return { angle: this.facing === 'left' ? -10 : 10 };
     }
     if (action === 'harvest') {
-      return { scaleX: 1.15, scaleY: 0.95 };
+      return { scaleX: this.baseScaleX * 1.15, scaleY: this.baseScaleY * 0.95 };
     }
     if (action === 'sleep') {
       return { alpha: 0.45 };
     }
-    return { scale: 1.08, duration };
+    return { scaleX: this.baseScaleX * 1.08, scaleY: this.baseScaleY * 1.08 };
   }
 }

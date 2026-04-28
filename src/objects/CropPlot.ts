@@ -1,8 +1,14 @@
 import Phaser from 'phaser';
 import { AssetKey } from '../config/assets';
 import { CROPS } from '../config/crops';
-import type { PlotSave } from '../types/GameState';
+import type { CropId, PlotSave } from '../types/GameState';
 import type { FieldPlot } from '../types/MapData';
+
+const cropRows: Record<CropId, number> = {
+  turnip: 0,
+  wheat: 1,
+  strawberry: 2
+};
 
 export class CropPlot {
   readonly bounds: Phaser.Geom.Rectangle;
@@ -21,6 +27,7 @@ export class CropPlot {
     this.center = { x: data.x + data.w / 2, y: data.y + data.h / 2 };
     this.base = scene.add.rectangle(this.center.x, this.center.y, data.w, data.h, 0x7a5130, 0.28);
     this.crop = scene.add.sprite(this.center.x, this.center.y, AssetKey.cropTurnip, 0);
+    this.crop.setDisplaySize(data.w, data.h);
     this.water = scene.add.rectangle(this.center.x, this.center.y, data.w - 6, data.h - 6, 0x7cc9ff, 0.3);
     this.highlight = scene.add.rectangle(this.center.x, this.center.y, data.w + 8, data.h + 8);
 
@@ -46,7 +53,7 @@ export class CropPlot {
     this.water.setVisible(this.state.cropId !== null && this.state.wateredToday);
     if (this.state.cropId) {
       const crop = CROPS[this.state.cropId];
-      this.crop.setFrame(Math.min(this.state.stage, crop.maxStage));
+      this.crop.setFrame(cropRows[this.state.cropId] * 4 + Math.min(this.state.stage, crop.maxStage));
       this.crop.setTint(crop.tint);
     } else {
       this.crop.clearTint();

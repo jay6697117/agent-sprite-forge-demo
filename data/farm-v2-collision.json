@@ -1,0 +1,116 @@
+{
+  "mapSize": {
+    "width": 1280,
+    "height": 960
+  },
+  "spawn": {
+    "x": 640,
+    "y": 780
+  },
+  "blockers": [
+    {
+      "id": "north-boundary",
+      "type": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 24
+    },
+    {
+      "id": "south-boundary",
+      "type": "rect",
+      "x": 0,
+      "y": 936,
+      "w": 1280,
+      "h": 24
+    },
+    {
+      "id": "west-boundary",
+      "type": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 960
+    },
+    {
+      "id": "east-boundary",
+      "type": "rect",
+      "x": 1256,
+      "y": 0,
+      "w": 24,
+      "h": 960
+    },
+    {
+      "id": "farmhouse-body",
+      "type": "rect",
+      "x": 68,
+      "y": 190,
+      "w": 248,
+      "h": 94
+    },
+    {
+      "id": "seed-shop-body",
+      "type": "rect",
+      "x": 900,
+      "y": 226,
+      "w": 260,
+      "h": 86
+    },
+    {
+      "id": "notice-board-body",
+      "type": "rect",
+      "x": 548,
+      "y": 262,
+      "w": 128,
+      "h": 42
+    },
+    {
+      "id": "well-base",
+      "type": "ellipse",
+      "x": 710,
+      "y": 480,
+      "rx": 48,
+      "ry": 34
+    },
+    {
+      "id": "pond",
+      "type": "ellipse",
+      "x": 980,
+      "y": 660,
+      "rx": 174,
+      "ry": 118
+    },
+    {
+      "id": "tree-pond-trunk",
+      "type": "ellipse",
+      "x": 830,
+      "y": 662,
+      "rx": 40,
+      "ry": 28
+    },
+    {
+      "id": "tree-forest-trunk",
+      "type": "ellipse",
+      "x": 1130,
+      "y": 188,
+      "rx": 34,
+      "ry": 24
+    },
+    {
+      "id": "field-north-fence",
+      "type": "rect",
+      "x": 270,
+      "y": 448,
+      "w": 400,
+      "h": 20
+    },
+    {
+      "id": "field-south-fence",
+      "type": "rect",
+      "x": 270,
+      "y": 758,
+      "w": 400,
+      "h": 20
+    }
+  ]
+}

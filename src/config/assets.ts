@@ -5,6 +5,8 @@ export const AssetKey = {
   npcSeedSeller: 'npc-seed-seller',
   cropTurnip: 'crop-turnip',
   itemsFarming: 'items-farming',
+  fxFarming: 'fx-farming',
+  uiIcons: 'ui-icons',
   farmCollision: 'farm-collision',
   farmZones: 'farm-zones',
   farmProps: 'farm-props'
@@ -17,6 +19,8 @@ export const AssetPath = {
   npcSeedSeller: '/assets/sprites/npc_seed_seller_v2/sheet-transparent.png',
   cropTurnip: '/assets/sprites/crops_v2/sheet-transparent.png',
   itemsFarming: '/assets/sprites/ui_icons/sheet-transparent.png',
+  fxFarming: '/assets/sprites/fx_farming/sheet-transparent.png',
+  uiIcons: '/assets/sprites/ui_icons/sheet-transparent.png',
   farmCollision: '/data/farm-v2-collision.json',
   farmZones: '/data/farm-v2-zones.json',
   farmProps: '/data/farm-v2-props.json'
@@ -24,5 +28,7 @@ export const AssetPath = {
 
 export const FrameSize = {
   character: { frameWidth: 96, frameHeight: 96 },
-  tile: { frameWidth: 128, frameHeight: 128 }
+  tile: { frameWidth: 128, frameHeight: 128 },
+  fx: { frameWidth: 128, frameHeight: 128 },
+  uiIcon: { frameWidth: 128, frameHeight: 128 }
 } as const;

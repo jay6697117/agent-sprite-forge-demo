@@ -12,7 +12,9 @@ export class PreloadScene extends Phaser.Scene {
     this.load.spritesheet(AssetKey.player, AssetPath.player, FrameSize.character);
     this.load.spritesheet(AssetKey.npcSeedSeller, AssetPath.npcSeedSeller, FrameSize.character);
     this.load.spritesheet(AssetKey.cropTurnip, AssetPath.cropTurnip, FrameSize.tile);
-    this.load.spritesheet(AssetKey.itemsFarming, AssetPath.itemsFarming, FrameSize.tile);
+    this.load.spritesheet(AssetKey.itemsFarming, AssetPath.itemsFarming, FrameSize.uiIcon);
+    this.load.spritesheet(AssetKey.fxFarming, AssetPath.fxFarming, FrameSize.fx);
+    this.load.spritesheet(AssetKey.uiIcons, AssetPath.uiIcons, FrameSize.uiIcon);
     this.load.json(AssetKey.farmCollision, AssetPath.farmCollision);
     this.load.json(AssetKey.farmZones, AssetPath.farmZones);
     this.load.json(AssetKey.farmProps, AssetPath.farmProps);

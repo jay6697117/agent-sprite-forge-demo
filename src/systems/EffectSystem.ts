@@ -1,5 +1,15 @@
 import Phaser from 'phaser';
+import { AssetKey } from '../config/assets';
 import type { FarmingAction } from './FarmingSystem';
+
+type FxTween = {
+  x?: number;
+  y?: number;
+  alpha?: number;
+  scale?: number;
+  angle?: number;
+  duration: number;
+};
 
 export class EffectSystem {
   constructor(private readonly scene: Phaser.Scene) {}
@@ -17,6 +27,7 @@ export class EffectSystem {
   }
 
   playGold(point: { x: number; y: number }) {
+    this.playFxSprite(3, point, 34, { y: point.y - 38, alpha: 0, scale: 0.4, duration: 720 });
     const text = this.scene.add.text(point.x, point.y - 36, '+金币', {
       fontFamily: 'system-ui, sans-serif',
       fontSize: '14px',
@@ -42,6 +53,7 @@ export class EffectSystem {
 
   private playPlant(point: { x: number; y: number }) {
     this.floatText(point, '撒种', '#ffe0a3');
+    this.playFxSprite(0, point, 44, { alpha: 0, scale: 0.55, duration: 520 });
     for (let i = 0; i < 5; i += 1) {
       const dust = this.scene.add.circle(point.x, point.y, 3, 0xc48a52, 0.75).setDepth(point.y + 10);
       this.scene.tweens.add({
@@ -59,6 +71,7 @@ export class EffectSystem {
 
   private playWater(point: { x: number; y: number }) {
     this.floatText(point, '浇水', '#a7ddff');
+    this.playFxSprite(1, { x: point.x, y: point.y - 18 }, 42, { y: point.y + 8, alpha: 0, duration: 420 });
     for (let i = 0; i < 7; i += 1) {
       const drop = this.scene.add.circle(point.x + Phaser.Math.Between(-14, 14), point.y - 32, 3, 0x80d5ff, 0.9).setDepth(point.y + 10);
       this.scene.tweens.add({
@@ -74,6 +87,7 @@ export class EffectSystem {
 
   private playHarvest(point: { x: number; y: number }) {
     this.floatText(point, '收获', '#fff0a0');
+    this.playFxSprite(2, { x: point.x, y: point.y - 8 }, 42, { alpha: 0, scale: 0.7, angle: 120, duration: 680 });
     for (let i = 0; i < 6; i += 1) {
       const sparkle = this.scene.add.star(point.x, point.y - 10, 5, 3, 8, 0xfff0a0, 0.95).setDepth(point.y + 20);
       this.scene.tweens.add({
@@ -88,6 +102,16 @@ export class EffectSystem {
         onComplete: () => sparkle.destroy()
       });
     }
+  }
+
+  private playFxSprite(frame: number, point: { x: number; y: number }, size: number, tween: FxTween) {
+    const sprite = this.scene.add.sprite(point.x, point.y, AssetKey.fxFarming, frame).setDisplaySize(size, size).setDepth(point.y + 30);
+    this.scene.tweens.add({
+      targets: sprite,
+      ease: 'Sine.easeOut',
+      onComplete: () => sprite.destroy(),
+      ...tween
+    });
   }
 
   private floatText(point: { x: number; y: number }, label: string, color: string) {

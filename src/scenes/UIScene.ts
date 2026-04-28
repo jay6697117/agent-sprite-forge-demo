@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { AssetKey } from '../config/assets';
 import { ControlText } from '../config/controls';
 import { CROPS } from '../config/crops';
 import type { FriendshipSave, Inventory, OrderSave, UnlockSave, UpgradeSave } from '../types/GameState';
@@ -73,15 +74,20 @@ export class UIScene extends Phaser.Scene {
   private createStatusPanel() {
     this.add.rectangle(16, 14, 288, 118, 0x4b2d1a, 0.88).setOrigin(0).setStrokeStyle(3, 0xf4d28b, 0.95);
     this.add.rectangle(24, 22, 272, 102, 0x6b4424, 0.72).setOrigin(0).setStrokeStyle(1, 0x2d1a10, 0.75);
-    this.dayText = this.panelText(36, 30, 18, '#fff0b8');
-    this.goldText = this.panelText(36, 55, 15, '#ffe27a');
-    this.energyText = this.panelText(36, 78, 15, '#a9f0aa');
-    this.reputationText = this.panelText(36, 101, 14, '#d8c7ff');
+    this.addIcon(30, 40, 0, 22);
+    this.addIcon(30, 64, 1, 19);
+    this.addIcon(30, 87, 2, 19);
+    this.addIcon(30, 109, 5, 18);
+    this.dayText = this.panelText(48, 30, 18, '#fff0b8');
+    this.goldText = this.panelText(48, 55, 15, '#ffe27a');
+    this.energyText = this.panelText(48, 78, 15, '#a9f0aa');
+    this.reputationText = this.panelText(48, 101, 14, '#d8c7ff');
   }
 
   private createOrderPanel() {
     this.add.rectangle(704, 14, 240, 156, 0x5a351f, 0.9).setOrigin(0).setStrokeStyle(3, 0xf4d28b, 0.95);
-    this.add.text(724, 28, '今日订单板', {
+    this.addIcon(718, 38, 3, 24);
+    this.add.text(744, 28, '今日订单板', {
       fontFamily: 'system-ui, sans-serif',
       fontSize: '18px',
       color: '#fff0b8',
@@ -211,6 +217,10 @@ export class UIScene extends Phaser.Scene {
         onComplete: () => this.messagePanel.setVisible(false)
       });
     });
+  }
+
+  private addIcon(x: number, y: number, frame: number, size: number) {
+    return this.add.image(x, y, AssetKey.uiIcons, frame).setDisplaySize(size, size).setDepth(1002);
   }
 
   private panelText(x: number, y: number, fontSize: number, color: string) {

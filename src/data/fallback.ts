@@ -52,10 +52,10 @@ export function createFallbackZones(): ZoneData {
         id: 'sleep_next_day',
         kind: 'next_day',
         type: 'rect',
-        x: 172,
-        y: 294,
-        w: 94,
-        h: 72,
+        x: 90,
+        y: 190,
+        w: 270,
+        h: 170,
         prompt: '按 E 睡觉并进入下一天'
       }
     ],

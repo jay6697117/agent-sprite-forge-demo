@@ -14,10 +14,10 @@
       "id": "sleep_next_day",
       "kind": "next_day",
       "type": "rect",
-      "x": 152,
-      "y": 248,
-      "w": 120,
-      "h": 82,
+      "x": 90,
+      "y": 190,
+      "w": 270,
+      "h": 170,
       "prompt": "\u6309 E \u7761\u89c9\u5e76\u8fdb\u5165\u4e0b\u4e00\u5929"
     }
   ],

@@ -44,6 +44,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       r: Phaser.Input.Keyboard.KeyCodes.R
     }) as PlayerKeys;
 
+    keyboard.on('keydown', this.handleKeyDown, this);
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      keyboard.off('keydown', this.handleKeyDown, this);
+    });
+
     this.setOrigin(0.5, 0.5);
     this.setSize(20, 12);
     this.setOffset(14, 34);
@@ -109,6 +114,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.selectedTool = 'watering_can';
     }
     if (Phaser.Input.Keyboard.JustDown(this.keys.three)) {
+      this.selectedTool = 'hand';
+    }
+  }
+
+  private handleKeyDown(event: KeyboardEvent) {
+    if (event.key === '1' || event.code === 'Digit1' || event.code === 'Numpad1') {
+      this.selectedTool = 'seed';
+    }
+    if (event.key === '2' || event.code === 'Digit2' || event.code === 'Numpad2') {
+      this.selectedTool = 'watering_can';
+    }
+    if (event.key === '3' || event.code === 'Digit3' || event.code === 'Numpad3') {
       this.selectedTool = 'hand';
     }
   }

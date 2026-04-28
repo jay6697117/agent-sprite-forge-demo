@@ -21,6 +21,7 @@ export class FarmScene extends Phaser.Scene {
   private shop?: ShopSystem;
   private activeZone?: Zone;
   private lastSaveAt = 0;
+  private lastInteractAt = 0;
 
   constructor() {
     super('FarmScene');
@@ -45,7 +46,8 @@ export class FarmScene extends Phaser.Scene {
     this.farming.updateActivePlot(feet);
     this.activeZone = this.interaction.findZone(feet);
 
-    if (this.player.wasInteractPressed()) {
+    if (this.player.wasInteractPressed() && time - this.lastInteractAt > 180) {
+      this.lastInteractAt = time;
       this.handleInteraction(feet);
     }
 

@@ -20,6 +20,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.json(AssetKey.farmZones, AssetPath.farmZones);
     this.load.json(AssetKey.farmProps, AssetPath.farmProps);
     this.load.image(AssetKey.houseBase, AssetPath.houseBase);
+    this.load.spritesheet(AssetKey.bedBlanket, AssetPath.bedBlanket, FrameSize.bedBlanket);
     this.load.json(AssetKey.houseCollision, AssetPath.houseCollision);
     this.load.json(AssetKey.houseZones, AssetPath.houseZones);
   }

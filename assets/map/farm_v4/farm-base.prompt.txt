@@ -2,6 +2,10 @@ Edit the provided 1600x960 cozy farm ground map into a cleaner, more detailed, h
 
 Preserve these positions and shapes as closely as possible: upper paths and stone pads, left crop field, central pond, dirt roads, open grass spaces, and all building/prop placement areas. This is a Phaser baked raster ground map that will have separate building props rendered on top, so do not add large buildings, characters, UI, labels, text, or watermarks.
 
-New design requirement: in the right-side garden area around x=1300..1560 and y=500..850 of the final 1600x960 map, create a charming fenced flower garden. Use low rustic wooden fences, colorful flower beds, small stepping stones, a tiny open gate, and a clear dirt/grass entrance so the player can walk into the garden and continue to the right-side corners. The fence should be decorative and not fully seal the area. Avoid large trees, cliffs, walls, big rocks, ponds, or anything that would visually block movement.
+Very important placement requirement: create ONE fenced flower garden in the LOWER-RIGHT area, east/right of the pond, around the lower-right open grass area. The garden must be near the bottom-right quadrant, not the upper-right corner. Visually, it should be roughly to the right of the pond and below the upper shop path, in the area around x=1300..1560 and y=500..850 of the final 1600x960 map.
 
-Improve the whole map's visual quality: sharper pixel-art details, richer grass texture, more tiny flowers, soft dirt-path edges, small flat decorative ground details, harmonious warm lighting, no blurry edges. Keep the original cozy farming game style and readable gameplay paths. Output only the full map background.
+Garden design: low rustic wooden fences forming a charming flower garden, colorful flower beds, small stepping stones, tiny decorative flat ground details, and a clear open gate connected to the dirt path. The fence should be decorative and not fully seal the area; the player should visually be able to walk into the garden and continue to right-side corners.
+
+Keep the upper-right area mostly as dirt road and grass meadow, not a fenced garden. Avoid large trees, cliffs, walls, big rocks, extra ponds, or anything that would visually block movement.
+
+Improve the whole map's visual quality: sharper pixel-art details, richer grass texture, more tiny flowers, soft dirt-path edges, harmonious warm lighting. Keep the original cozy farming game style and readable gameplay paths. Output only the full map background.

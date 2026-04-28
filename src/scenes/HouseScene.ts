@@ -25,9 +25,11 @@ const BedsidePosition = { x: 142, y: 264 };
 const SleepPosition = { x: 124, y: 174 };
 const WakePosition = { x: 152, y: 266 };
 const SleepZzzPosition = { x: 148, y: 132 };
-const BlanketFoldPosition = { x: 124, y: 228 };
-const BlanketCoverPosition = { x: 124, y: 194 };
-const BlanketSize = { width: 62, foldedHeight: 18, coverHeight: 64 };
+const BlanketNormalPosition = { x: 124, y: 166 };
+const BlanketFoldPosition = { x: 124, y: 193 };
+const BlanketCoverPosition = { x: 124, y: 205 };
+const BlanketDisplaySize = { width: 172, height: 118 };
+const BlanketFrame = { normal: 0, folded: 1, covered: 2 } as const;
 
 export class HouseScene extends Phaser.Scene {
   private player?: Player;
@@ -35,7 +37,7 @@ export class HouseScene extends Phaser.Scene {
   private interaction?: InteractionSystem;
   private effects?: EffectSystem;
   private activeZone?: Zone;
-  private sleepBlanket?: Phaser.GameObjects.Rectangle;
+  private sleepBlanket?: Phaser.GameObjects.Sprite;
   private farmSpawnOverride: SpawnOverride = { x: 190, y: 315, facing: 'down' };
   private lastInteractAt = 0;
   private sleepInProgress = false;
@@ -54,6 +56,7 @@ export class HouseScene extends Phaser.Scene {
     this.farmSpawnOverride = data.farmSpawnOverride ?? this.defaultFarmSpawn(farmZones);
     this.ensureUiScene();
     this.add.image(0, 0, AssetKey.houseBase).setOrigin(0).setDisplaySize(collision.mapSize.width, collision.mapSize.height).setDepth(-1000);
+    this.createSleepBlanket();
     this.physics.world.setBounds(0, 0, collision.mapSize.width, collision.mapSize.height);
     this.cameras.main.setBounds(0, 0, collision.mapSize.width, collision.mapSize.height);
 
@@ -129,7 +132,7 @@ export class HouseScene extends Phaser.Scene {
     const sleepFacing: 'left' | 'right' = Phaser.Math.Between(0, 1) === 0 ? 'left' : 'right';
     this.sleepInProgress = true;
     this.activeZone = undefined;
-    this.clearSleepBlanket();
+    this.createSleepBlanket();
     player.setControlLocked(true);
     player.setSleepPose(false);
     player.facing = 'up';
@@ -139,7 +142,7 @@ export class HouseScene extends Phaser.Scene {
       .then(() => {
         player.facing = 'up';
         player.setSleepPose(false);
-        this.showMessage('先掀开被子。');
+        this.showMessage('先掀开床上的被子。');
         return this.openBlanket();
       })
       .then(() => {
@@ -171,7 +174,7 @@ export class HouseScene extends Phaser.Scene {
         player.setDepth(WakePosition.y + 28);
         player.setSleepPose(false);
         player.setControlLocked(false);
-        this.clearSleepBlanket();
+        this.setBlanketNormal();
         this.sleepInProgress = false;
         this.showMessage(message);
       });
@@ -179,17 +182,15 @@ export class HouseScene extends Phaser.Scene {
 
   private openBlanket() {
     const blanket = this.createSleepBlanket();
-    blanket.setPosition(BlanketCoverPosition.x, BlanketCoverPosition.y);
-    blanket.setDisplaySize(BlanketSize.width, BlanketSize.coverHeight);
-    blanket.setAlpha(0.95);
+    this.setBlanketNormal();
+    blanket.setFrame(BlanketFrame.folded);
 
     return new Promise<void>((resolve) => {
       this.tweens.add({
         targets: blanket,
         x: BlanketFoldPosition.x,
         y: BlanketFoldPosition.y,
-        displayHeight: BlanketSize.foldedHeight,
-        angle: 4,
+        angle: 3,
         duration: 420,
         ease: 'Sine.easeInOut',
         onComplete: () => resolve()
@@ -199,6 +200,8 @@ export class HouseScene extends Phaser.Scene {
 
   private coverBlanket() {
     const blanket = this.sleepBlanket ?? this.createSleepBlanket();
+    blanket.setFrame(BlanketFrame.covered);
+    blanket.setDisplaySize(BlanketDisplaySize.width, BlanketDisplaySize.height);
     blanket.setDepth(SleepPosition.y + 180);
 
     return new Promise<void>((resolve) => {
@@ -206,8 +209,6 @@ export class HouseScene extends Phaser.Scene {
         targets: blanket,
         x: BlanketCoverPosition.x,
         y: BlanketCoverPosition.y,
-        displayWidth: BlanketSize.width,
-        displayHeight: BlanketSize.coverHeight,
         angle: 0,
         duration: 520,
         ease: 'Sine.easeInOut',
@@ -221,20 +222,21 @@ export class HouseScene extends Phaser.Scene {
       return this.sleepBlanket;
     }
 
-    this.sleepBlanket = this.add.rectangle(
-      BlanketFoldPosition.x,
-      BlanketFoldPosition.y,
-      BlanketSize.width,
-      BlanketSize.foldedHeight,
-      0x6f91c9,
-      0.95
-    ).setOrigin(0.5).setStrokeStyle(2, 0xe8f1ff, 0.9).setDepth(SleepPosition.y + 180);
+    this.sleepBlanket = this.add.sprite(BlanketNormalPosition.x, BlanketNormalPosition.y, AssetKey.bedBlanket, BlanketFrame.normal)
+      .setOrigin(0.5)
+      .setDisplaySize(BlanketDisplaySize.width, BlanketDisplaySize.height)
+      .setDepth(SleepPosition.y + 180);
     return this.sleepBlanket;
   }
 
-  private clearSleepBlanket() {
-    this.sleepBlanket?.destroy();
-    this.sleepBlanket = undefined;
+  private setBlanketNormal() {
+    const blanket = this.createSleepBlanket();
+    blanket.setFrame(BlanketFrame.normal);
+    blanket.setPosition(BlanketNormalPosition.x, BlanketNormalPosition.y);
+    blanket.setDisplaySize(BlanketDisplaySize.width, BlanketDisplaySize.height);
+    blanket.setAngle(0);
+    blanket.setAlpha(1);
+    blanket.setDepth(SleepPosition.y + 180);
   }
 
   private movePlayerTo(point: { x: number; y: number }, duration: number) {

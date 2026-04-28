@@ -12,12 +12,13 @@ export const AssetKey = {
   farmZones: 'farm-zones',
   farmProps: 'farm-props',
   houseBase: 'house-base',
+  bedBlanket: 'bed-blanket',
   houseCollision: 'house-collision',
   houseZones: 'house-zones'
 } as const;
 
 export const AssetPath = {
-  farmBase: '/assets/map/farm_v3/farm-base.png',
+  farmBase: '/assets/map/farm_v4/farm-base.png',
   farmPreview: '/assets/map/farm_v2/farm-layered-preview.png',
   player: '/assets/sprites/player_farmer_v2/action_sheet/sheet-transparent.png',
   playerWalk: '/assets/sprites/player_farmer_v2/walk/sheet-transparent.png',
@@ -30,6 +31,7 @@ export const AssetPath = {
   farmZones: '/data/farm-v2-zones.json',
   farmProps: '/data/farm-v2-props.json',
   houseBase: '/assets/map/house_v1/house-base.png',
+  bedBlanket: '/assets/sprites/bed_blanket_v1/sheet-transparent.png',
   houseCollision: '/data/house-v1-collision.json',
   houseZones: '/data/house-v1-zones.json'
 } as const;
@@ -38,5 +40,6 @@ export const FrameSize = {
   character: { frameWidth: 96, frameHeight: 96 },
   tile: { frameWidth: 128, frameHeight: 128 },
   fx: { frameWidth: 128, frameHeight: 128 },
-  uiIcon: { frameWidth: 128, frameHeight: 128 }
+  uiIcon: { frameWidth: 128, frameHeight: 128 },
+  bedBlanket: { frameWidth: 128, frameHeight: 128 }
 } as const;

@@ -1,0 +1,11 @@
+Create a refined 1600x960 3/4 top-down cozy farm pixel-art background by combining two references:
+
+Reference A, farm_v3: use this as the color/style target. Preserve its warmer, softer, more natural color palette, pleasant grass greens, balanced dirt-road color, cozy lighting, and overall visual harmony.
+
+Reference B, farm_v4: use this as the layout/design target. Preserve the lower-right fenced flower garden idea, richer map details, winding paths, central pond, crop field, open grass spaces, and readable gameplay paths.
+
+Goal: keep the farm_v4 design direction but restyle it so the final image feels like farm_v3 with better polish. The right-lower garden around x=1300..1560 and y=500..850 should be a charming rustic fenced flower garden with a visible gate/opening, colorful flowers, flat stepping stones, and no full blockage. The upper-right should remain open road/grass, not the main garden.
+
+Gameplay constraints: this is a Phaser baked raster ground map with separate props rendered on top. Do not add characters, UI, text, labels, watermarks, or large new buildings. Avoid large trees, cliffs, walls, extra ponds, huge rocks, or anything that visually blocks walking. Keep the player visually able to walk through paths and into/right around the garden.
+
+Quality target: cleaner and more high-definition than farm_v3, but not oversaturated or muddy. Sharper pixel-art detail, richer grass texture, tiny flowers, soft path edges, warm cohesive colors, no harsh seams. Output only the full 1600x960 map background.

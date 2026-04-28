@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "map": "assets/map/town_market.png",
+  "coordinate_system": "pixels_top_left_origin",
+  "size": {
+    "width": 1024,
+    "height": 1024
+  },
+  "spawn_points": [
+    {
+      "id": "player_start_south_road",
+      "x": 515,
+      "y": 910,
+      "facing": "north"
+    },
+    {
+      "id": "market_center",
+      "x": 512,
+      "y": 520,
+      "facing": "south"
+    }
+  ],
+  "exits": [
+    {
+      "id": "north_road_exit",
+      "rect": {"x": 430, "y": 0, "w": 100, "h": 40},
+      "target": "north_meadow",
+      "target_spawn": "south_road"
+    },
+    {
+      "id": "south_road_exit",
+      "rect": {"x": 450, "y": 984, "w": 135, "h": 40},
+      "target": "south_fields",
+      "target_spawn": "north_road"
+    },
+    {
+      "id": "west_road_exit",
+      "rect": {"x": 0, "y": 325, "w": 45, "h": 70},
+      "target": "west_residential_lane",
+      "target_spawn": "east_road"
+    },
+    {
+      "id": "east_bridge_exit",
+      "rect": {"x": 984, "y": 522, "w": 40, "h": 76},
+      "target": "east_riverside_path",
+      "target_spawn": "west_bridge"
+    }
+  ],
+  "interaction_zones": [
+    {
+      "id": "bakery_counter",
+      "label": "Bakery stall window",
+      "rect": {"x": 155, "y": 286, "w": 145, "h": 50},
+      "action": "shop",
+      "tags": ["shop", "bakery"]
+    },
+    {
+      "id": "general_store_door",
+      "label": "General store entrance",
+      "rect": {"x": 595, "y": 298, "w": 95, "h": 48},
+      "action": "enter_building",
+      "tags": ["shop", "building"]
+    },
+    {
+      "id": "blue_home_door",
+      "label": "Blue-roof home entrance",
+      "rect": {"x": 132, "y": 574, "w": 70, "h": 50},
+      "action": "enter_building",
+      "tags": ["house"]
+    },
+    {
+      "id": "green_home_door",
+      "label": "Green-roof home entrance",
+      "rect": {"x": 175, "y": 792, "w": 72, "h": 50},
+      "action": "enter_building",
+      "tags": ["house"]
+    },
+    {
+      "id": "purple_home_door",
+      "label": "Purple-roof home entrance",
+      "rect": {"x": 660, "y": 807, "w": 82, "h": 54},
+      "action": "enter_building",
+      "tags": ["house"]
+    },
+    {
+      "id": "red_food_stall",
+      "label": "Red market stall",
+      "rect": {"x": 382, "y": 432, "w": 98, "h": 46},
+      "action": "shop",
+      "tags": ["market", "food"]
+    },
+    {
+      "id": "blue_goods_stall",
+      "label": "Blue market stall",
+      "rect": {"x": 523, "y": 436, "w": 116, "h": 45},
+      "action": "shop",
+      "tags": ["market", "goods"]
+    },
+    {
+      "id": "green_produce_stall",
+      "label": "Green produce stall",
+      "rect": {"x": 291, "y": 560, "w": 100, "h": 50},
+      "action": "shop",
+      "tags": ["market", "produce"]
+    },
+    {
+      "id": "yellow_coin_stall",
+      "label": "Yellow market stall",
+      "rect": {"x": 622, "y": 556, "w": 122, "h": 52},
+      "action": "shop",
+      "tags": ["market", "trade"]
+    },
+    {
+      "id": "purple_trinket_stall",
+      "label": "Purple trinket stall",
+      "rect": {"x": 452, "y": 684, "w": 136, "h": 50},
+      "action": "shop",
+      "tags": ["market", "trinkets"]
+    },
+    {
+      "id": "town_well",
+      "label": "Town well",
+      "rect": {"x": 198, "y": 552, "w": 86, "h": 82},
+      "action": "inspect",
+      "tags": ["well"]
+    },
+    {
+      "id": "bridge_crossing",
+      "label": "Stone bridge",
+      "rect": {"x": 820, "y": 500, "w": 204, "h": 108},
+      "action": "cross_bridge",
+      "tags": ["bridge", "river"]
+    }
+  ],
+  "area_zones": [
+    {
+      "id": "central_market_plaza",
+      "polygon": [[330, 350], [690, 350], [790, 455], [720, 685], [512, 755], [300, 650], [232, 462]],
+      "tags": ["market", "safe", "town"]
+    },
+    {
+      "id": "river_area",
+      "polygon": [[826, 0], [1024, 0], [1024, 1024], [810, 1024], [842, 735], [836, 612], [922, 486], [866, 392], [810, 280]],
+      "tags": ["river", "water"]
+    },
+    {
+      "id": "lower_farm_garden",
+      "polygon": [[92, 800], [420, 800], [420, 970], [92, 970]],
+      "tags": ["garden", "crops"]
+    }
+  ]
+}

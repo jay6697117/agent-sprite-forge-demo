@@ -1,0 +1,274 @@
+{
+  "input": "assets/props/farm_v2/raw-prop-pack.png",
+  "rows": 2,
+  "cols": 3,
+  "threshold": 100,
+  "edge_threshold": 150,
+  "component_mode": "largest",
+  "component_padding": 10,
+  "min_component_area": 100,
+  "edge_touch_margin": 0,
+  "accepted": [
+    {
+      "index": 0,
+      "label": "farmhouse",
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        341,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 70015,
+      "selected_component_bbox": [
+        75,
+        56,
+        333,
+        386
+      ],
+      "crop_bbox": [
+        75,
+        56,
+        333,
+        386
+      ],
+      "padded_crop_bbox": [
+        65,
+        46,
+        333,
+        396
+      ],
+      "edge_touch": true,
+      "output_size": [
+        268,
+        350
+      ],
+      "status": "accepted",
+      "image": "assets/props/farm_v2/farmhouse/prop.png"
+    },
+    {
+      "index": 1,
+      "label": "seed-shop",
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        341,
+        0,
+        682,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 4,
+      "selected_component_area": 27464,
+      "selected_component_bbox": [
+        0,
+        78,
+        131,
+        379
+      ],
+      "crop_bbox": [
+        0,
+        78,
+        131,
+        379
+      ],
+      "padded_crop_bbox": [
+        0,
+        68,
+        141,
+        389
+      ],
+      "edge_touch": true,
+      "output_size": [
+        141,
+        321
+      ],
+      "status": "accepted",
+      "image": "assets/props/farm_v2/seed-shop/prop.png"
+    },
+    {
+      "index": 2,
+      "label": "notice-board",
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        682,
+        0,
+        1023,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 62470,
+      "selected_component_bbox": [
+        0,
+        44,
+        239,
+        378
+      ],
+      "crop_bbox": [
+        0,
+        44,
+        239,
+        378
+      ],
+      "padded_crop_bbox": [
+        0,
+        34,
+        249,
+        388
+      ],
+      "edge_touch": true,
+      "output_size": [
+        249,
+        354
+      ],
+      "status": "accepted",
+      "image": "assets/props/farm_v2/notice-board/prop.png"
+    },
+    {
+      "index": 3,
+      "label": "well",
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        341,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 35312,
+      "selected_component_bbox": [
+        151,
+        173,
+        333,
+        455
+      ],
+      "crop_bbox": [
+        151,
+        173,
+        333,
+        455
+      ],
+      "padded_crop_bbox": [
+        141,
+        163,
+        333,
+        465
+      ],
+      "edge_touch": true,
+      "output_size": [
+        192,
+        302
+      ],
+      "status": "accepted",
+      "image": "assets/props/farm_v2/well/prop.png"
+    },
+    {
+      "index": 4,
+      "label": "tree-oak",
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        341,
+        512,
+        682,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 5,
+      "selected_component_area": 11003,
+      "selected_component_bbox": [
+        211,
+        294,
+        333,
+        430
+      ],
+      "crop_bbox": [
+        211,
+        294,
+        333,
+        430
+      ],
+      "padded_crop_bbox": [
+        201,
+        284,
+        333,
+        440
+      ],
+      "edge_touch": true,
+      "output_size": [
+        132,
+        156
+      ],
+      "status": "accepted",
+      "image": "assets/props/farm_v2/tree-oak/prop.png"
+    },
+    {
+      "index": 5,
+      "label": "fence-pack",
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        682,
+        512,
+        1023,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 21251,
+      "selected_component_bbox": [
+        0,
+        294,
+        230,
+        431
+      ],
+      "crop_bbox": [
+        0,
+        294,
+        230,
+        431
+      ],
+      "padded_crop_bbox": [
+        0,
+        284,
+        240,
+        441
+      ],
+      "edge_touch": true,
+      "output_size": [
+        240,
+        157
+      ],
+      "status": "accepted",
+      "image": "assets/props/farm_v2/fence-pack/prop.png"
+    }
+  ],
+  "rejected": [],
+  "edge_touch_props": [
+    "farmhouse",
+    "seed-shop",
+    "notice-board",
+    "well",
+    "tree-oak",
+    "fence-pack"
+  ]
+}

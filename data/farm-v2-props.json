@@ -44,10 +44,10 @@
       "id": "fence_north",
       "image": "assets/props/farm_v2/fence_pack.png",
       "x": 470,
-      "y": 500,
+      "y": 462,
       "w": 410,
       "h": 96,
-      "sortY": 500,
+      "sortY": 462,
       "anchor": "center-bottom"
     },
     {

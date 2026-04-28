@@ -15,6 +15,13 @@ import { ShopSystem } from '../systems/ShopSystem';
 import type { CollisionData, PropData, PropPlacement, Zone, ZoneData } from '../types/MapData';
 import type { CropId, GameSave } from '../types/GameState';
 
+const CameraZoom = {
+  min: 1,
+  max: 2.2,
+  step: 0.1,
+  initial: 1.5
+} as const;
+
 export class FarmScene extends Phaser.Scene {
   private player?: Player;
   private state?: GameSave;
@@ -120,7 +127,8 @@ export class FarmScene extends Phaser.Scene {
     this.effects = new EffectSystem(this);
 
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
-    this.cameras.main.setZoom(1.5);
+    this.setCameraZoom(CameraZoom.initial);
+    this.setupZoomControls();
     this.emitUiUpdate();
     this.showMessage('新的一天开始啦。查看订单，种下作物，别忘了留点体力。');
   }
@@ -210,6 +218,46 @@ export class FarmScene extends Phaser.Scene {
 
   private selectedSeedCrop(): CropId | null {
     return this.player ? cropForTool(this.player.selectedTool) : null;
+  }
+
+  private setupZoomControls() {
+    this.input.keyboard?.on('keydown', this.handleZoomKey, this);
+    this.input.on('wheel', this.handleWheelZoom, this);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.input.keyboard?.off('keydown', this.handleZoomKey, this);
+      this.input.off('wheel', this.handleWheelZoom, this);
+    });
+  }
+
+  private handleZoomKey(event: KeyboardEvent) {
+    if (event.key === '+' || event.key === '=') {
+      event.preventDefault();
+      this.changeCameraZoom(CameraZoom.step, true);
+    }
+    if (event.key === '-' || event.key === '_') {
+      event.preventDefault();
+      this.changeCameraZoom(-CameraZoom.step, true);
+    }
+    if (event.key === '0') {
+      event.preventDefault();
+      this.setCameraZoom(CameraZoom.initial, true);
+    }
+  }
+
+  private handleWheelZoom(_pointer: Phaser.Input.Pointer, _gameObjects: Phaser.GameObjects.GameObject[], _deltaX: number, deltaY: number) {
+    this.changeCameraZoom(deltaY < 0 ? CameraZoom.step : -CameraZoom.step);
+  }
+
+  private changeCameraZoom(delta: number, announce = false) {
+    this.setCameraZoom(this.cameras.main.zoom + delta, announce);
+  }
+
+  private setCameraZoom(value: number, announce = false) {
+    const zoom = Phaser.Math.Clamp(Number(value.toFixed(2)), CameraZoom.min, CameraZoom.max);
+    this.cameras.main.setZoom(zoom);
+    if (announce) {
+      this.showMessage(`地图缩放 ${Math.round(zoom * 100)}%`);
+    }
   }
 
   private emitUiUpdate() {

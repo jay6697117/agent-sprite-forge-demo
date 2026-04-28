@@ -135,7 +135,7 @@ export class UIScene extends Phaser.Scene {
       }).setOrigin(0.5);
       this.toolItems.push({ ...tool, box, text });
     });
-    this.add.text(18, 142, `${ControlText.move}\n${ControlText.interact}\n${ControlText.shop}\nR 重置`, {
+    this.add.text(18, 142, `${ControlText.move}\n${ControlText.interact}\n${ControlText.shop}\n${ControlText.zoom}\nR 重置`, {
       fontFamily: 'system-ui, sans-serif',
       fontSize: '12px',
       color: '#f6e6bd',

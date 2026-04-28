@@ -57,6 +57,16 @@ export function createFallbackZones(): ZoneData {
         w: 270,
         h: 170,
         prompt: '按 E 睡觉并进入下一天'
+      },
+      {
+        id: 'order_board',
+        kind: 'info',
+        type: 'rect',
+        x: 330,
+        y: 292,
+        w: 150,
+        h: 82,
+        prompt: '按 E 查看并交付今日订单'
       }
     ],
     fieldPlots

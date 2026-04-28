@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
 import { AssetKey } from '../config/assets';
+import { CROPS } from '../config/crops';
 import type { PlotSave } from '../types/GameState';
 import type { FieldPlot } from '../types/MapData';
 
 export class CropPlot {
   readonly bounds: Phaser.Geom.Rectangle;
+  readonly center: { x: number; y: number };
   private readonly base: Phaser.GameObjects.Rectangle;
   private readonly crop: Phaser.GameObjects.Sprite;
   private readonly water: Phaser.GameObjects.Rectangle;
@@ -16,18 +18,17 @@ export class CropPlot {
     private readonly state: PlotSave
   ) {
     this.bounds = new Phaser.Geom.Rectangle(data.x, data.y, data.w, data.h);
-    const centerX = data.x + data.w / 2;
-    const centerY = data.y + data.h / 2;
-    this.base = scene.add.rectangle(centerX, centerY, data.w, data.h, 0x6b4a2d, 0.18);
-    this.crop = scene.add.sprite(centerX, centerY, AssetKey.cropTurnip, 0);
-    this.water = scene.add.rectangle(centerX, centerY, data.w - 6, data.h - 6, 0x6db7ff, 0.25);
-    this.highlight = scene.add.rectangle(centerX, centerY, data.w + 4, data.h + 4);
+    this.center = { x: data.x + data.w / 2, y: data.y + data.h / 2 };
+    this.base = scene.add.rectangle(this.center.x, this.center.y, data.w, data.h, 0x7a5130, 0.28);
+    this.crop = scene.add.sprite(this.center.x, this.center.y, AssetKey.cropTurnip, 0);
+    this.water = scene.add.rectangle(this.center.x, this.center.y, data.w - 6, data.h - 6, 0x7cc9ff, 0.3);
+    this.highlight = scene.add.rectangle(this.center.x, this.center.y, data.w + 8, data.h + 8);
 
-    this.base.setDepth(centerY - 2);
-    this.crop.setDepth(centerY + 1);
-    this.water.setDepth(centerY);
-    this.highlight.setDepth(centerY + 2);
-    this.highlight.setStrokeStyle(2, 0xfff0a0, 0.8);
+    this.base.setDepth(this.center.y - 2);
+    this.crop.setDepth(this.center.y + 1);
+    this.water.setDepth(this.center.y);
+    this.highlight.setDepth(this.center.y + 2);
+    this.highlight.setStrokeStyle(2, 0xffe8a3, 0.95);
     this.highlight.setVisible(false);
     this.refresh();
   }
@@ -44,7 +45,11 @@ export class CropPlot {
     this.crop.setVisible(this.state.cropId !== null);
     this.water.setVisible(this.state.cropId !== null && this.state.wateredToday);
     if (this.state.cropId) {
-      this.crop.setFrame(this.state.stage);
+      const crop = CROPS[this.state.cropId];
+      this.crop.setFrame(Math.min(this.state.stage, crop.maxStage));
+      this.crop.setTint(crop.tint);
+    } else {
+      this.crop.clearTint();
     }
   }
 

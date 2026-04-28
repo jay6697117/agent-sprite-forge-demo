@@ -1,16 +1,19 @@
 import Phaser from 'phaser';
 import { AssetKey } from '../config/assets';
+import { cropForTool } from '../config/crops';
 import { createFallbackCollision, createFallbackProps, createFallbackZones } from '../data/fallback';
 import { Npc } from '../objects/Npc';
 import { Player } from '../objects/Player';
 import { CollisionSystem } from '../systems/CollisionSystem';
-import { FarmingSystem } from '../systems/FarmingSystem';
+import { EffectSystem } from '../systems/EffectSystem';
+import { FarmingSystem, type FarmingAction } from '../systems/FarmingSystem';
 import { InteractionSystem } from '../systems/InteractionSystem';
 import { InventorySystem } from '../systems/InventorySystem';
+import { OrderSystem } from '../systems/OrderSystem';
 import { SaveSystem } from '../systems/SaveSystem';
 import { ShopSystem } from '../systems/ShopSystem';
 import type { CollisionData, PropData, PropPlacement, Zone, ZoneData } from '../types/MapData';
-import type { GameSave } from '../types/GameState';
+import type { CropId, GameSave } from '../types/GameState';
 
 export class FarmScene extends Phaser.Scene {
   private player?: Player;
@@ -19,6 +22,8 @@ export class FarmScene extends Phaser.Scene {
   private farming?: FarmingSystem;
   private interaction?: InteractionSystem;
   private shop?: ShopSystem;
+  private orders?: OrderSystem;
+  private effects?: EffectSystem;
   private activeZone?: Zone;
   private lastSaveAt = 0;
   private lastInteractAt = 0;
@@ -37,7 +42,7 @@ export class FarmScene extends Phaser.Scene {
   }
 
   update(time: number) {
-    if (!this.player || !this.state || !this.inventory || !this.farming || !this.interaction || !this.shop) {
+    if (!this.player || !this.state || !this.inventory || !this.farming || !this.interaction || !this.shop || !this.effects) {
       return;
     }
 
@@ -52,11 +57,27 @@ export class FarmScene extends Phaser.Scene {
     }
 
     if (this.activeZone?.kind === 'shop' && this.player.wasBuyPressed()) {
-      this.showMessage(this.shop.buySeed());
+      const cropId = this.selectedSeedCrop() ?? 'turnip';
+      this.player.playAction('shop', () => {
+        this.showMessage(this.shop?.buySeed(cropId) ?? '商店还没准备好。');
+        this.effects?.playGold(feet);
+      });
     }
 
     if (this.activeZone?.kind === 'shop' && this.player.wasSellPressed()) {
-      this.showMessage(this.shop.sellCrop());
+      const cropId = this.selectedSeedCrop() ?? this.inventory.firstSellableCrop();
+      this.player.playAction('shop', () => {
+        this.showMessage(this.shop?.sellCrop(cropId) ?? '商店还没准备好。');
+        this.effects?.playGold(feet);
+      });
+    }
+
+    if (this.activeZone?.kind === 'shop' && this.player.wasUpgradePressed()) {
+      this.player.playAction('shop', () => {
+        this.showMessage(this.shop?.buyUpgrade() ?? '商店还没准备好。');
+        this.player?.setSpeedBonus(((this.state?.upgrades.shoeLevel ?? 1) - 1) * 18);
+        this.effects?.playGold(feet);
+      });
     }
 
     if (this.player.wasResetPressed()) {
@@ -86,7 +107,7 @@ export class FarmScene extends Phaser.Scene {
 
     this.state = SaveSystem.load(zones.fieldPlots, collision.spawn);
     this.inventory = new InventorySystem(this.state);
-    this.player = new Player(this, this.state.player.x, this.state.player.y, this.state.player.facing);
+    this.player = new Player(this, this.state.player.x, this.state.player.y, this.state.player.facing, (this.state.upgrades.shoeLevel - 1) * 18);
     new Npc(this, 820, 438);
 
     const collisionSystem = new CollisionSystem(this, collision);
@@ -95,11 +116,13 @@ export class FarmScene extends Phaser.Scene {
     this.farming = new FarmingSystem(this, zones.fieldPlots, this.state, this.inventory);
     this.interaction = new InteractionSystem(zones);
     this.shop = new ShopSystem(this.state, this.inventory);
+    this.orders = new OrderSystem(this.state, this.inventory);
+    this.effects = new EffectSystem(this);
 
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
     this.cameras.main.setZoom(1.5);
     this.emitUiUpdate();
-    this.showMessage('农场准备好了。先去农田播种，靠近商人可买卖。');
+    this.showMessage('新的一天开始啦。查看订单，种下作物，别忘了留点体力。');
   }
 
   private loadProps(props: PropData, onComplete: () => void) {
@@ -138,25 +161,55 @@ export class FarmScene extends Phaser.Scene {
   }
 
   private handleInteraction(feet: { x: number; y: number }) {
-    if (!this.player || !this.farming || !this.activeZone) {
-      const message = this.farming?.useTool(this.player?.selectedTool ?? 'seed', feet);
-      if (message) {
-        this.showMessage(message);
+    if (!this.player || !this.farming || !this.effects) {
+      return;
+    }
+
+    if (this.activeZone?.kind === 'shop') {
+      this.player.playAction('talk', () => {
+        this.showMessage('种子商人：B 买当前种子，V 卖作物，U 买升级。完成订单会解锁新商品。');
+      });
+      return;
+    }
+
+    if (this.activeZone?.kind === 'next_day') {
+      this.effects.playSleep();
+      this.player.playAction('sleep', () => {
+        this.showMessage(this.farming?.advanceDay() ?? '新的一天开始。');
+      }, 680);
+      return;
+    }
+
+    if (this.activeZone?.kind === 'info') {
+      this.player.playAction('talk', () => {
+        this.showMessage(this.orders?.completeReadyOrders() ?? '公告板还没有订单。');
+        this.effects?.playGold(feet);
+      });
+      return;
+    }
+
+    const action = this.actionForTool();
+    this.player.playAction(action, () => {
+      const result = this.farming?.useTool(this.player?.selectedTool ?? 'hand', feet);
+      if (!result) {
+        return;
       }
-      return;
-    }
+      if (result.changed && result.action && result.point) {
+        this.effects?.playFarming(result.action, result.point);
+      }
+      this.showMessage(result.message);
+    });
+  }
 
-    if (this.activeZone.kind === 'shop') {
-      this.showMessage('种子商人：按 B 买种子，按 V 卖成熟作物。');
-      return;
-    }
+  private actionForTool(): FarmingAction {
+    if (!this.player) return 'harvest';
+    if (cropForTool(this.player.selectedTool)) return 'plant';
+    if (this.player.selectedTool === 'watering_can') return 'water';
+    return 'harvest';
+  }
 
-    if (this.activeZone.kind === 'next_day') {
-      this.showMessage(this.farming.advanceDay());
-      return;
-    }
-
-    this.showMessage(this.farming.useTool(this.player.selectedTool, feet));
+  private selectedSeedCrop(): CropId | null {
+    return this.player ? cropForTool(this.player.selectedTool) : null;
   }
 
   private emitUiUpdate() {
@@ -167,8 +220,14 @@ export class FarmScene extends Phaser.Scene {
     this.game.events.emit('ui:update', {
       day: this.state.day,
       gold: this.state.gold,
-      turnipSeed: this.state.inventory.turnipSeed,
-      turnipCrop: this.state.inventory.turnipCrop,
+      energy: this.state.energy,
+      maxEnergy: this.state.maxEnergy,
+      reputation: this.state.reputation,
+      inventory: this.state.inventory,
+      orders: this.state.orders,
+      upgrades: this.state.upgrades,
+      friendship: this.state.friendship,
+      unlocks: this.state.unlocks,
       tool: this.player.selectedTool,
       prompt: InteractionSystem.promptFor(this.activeZone)
     });

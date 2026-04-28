@@ -1,5 +1,5 @@
 export type Facing = 'down' | 'left' | 'right' | 'up';
-export type ToolId = 'seed' | 'watering_can' | 'hand';
+export type ToolId = 'turnip_seed' | 'wheat_seed' | 'strawberry_seed' | 'watering_can' | 'hand';
 
 export type RectShape = {
   id: string;

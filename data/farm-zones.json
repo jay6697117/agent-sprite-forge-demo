@@ -8,7 +8,7 @@
       "y": 342,
       "w": 220,
       "h": 158,
-      "prompt": "\u6309 E \u4e0e\u79cd\u5b50\u5546\u4eba\u4ea4\u8c08"
+      "prompt": "按 E 与种子商人交谈"
     },
     {
       "id": "sleep_next_day",
@@ -18,7 +18,17 @@
       "y": 190,
       "w": 270,
       "h": 170,
-      "prompt": "\u6309 E \u7761\u89c9\u5e76\u8fdb\u5165\u4e0b\u4e00\u5929"
+      "prompt": "按 E 睡觉并进入下一天"
+    },
+    {
+      "id": "order_board",
+      "kind": "info",
+      "type": "rect",
+      "x": 330,
+      "y": 292,
+      "w": 150,
+      "h": 82,
+      "prompt": "按 E 查看并交付今日订单"
     }
   ],
   "fieldPlots": [

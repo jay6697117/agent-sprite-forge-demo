@@ -11,15 +11,15 @@ export const AssetKey = {
 } as const;
 
 export const AssetPath = {
-  farmBase: '/assets/map/farm/farm-base.png',
-  farmPreview: '/assets/map/farm/farm-layered-preview.png',
+  farmBase: '/assets/map/farm_v2/farm-base.png',
+  farmPreview: '/assets/map/farm_v2/farm-layered-preview.png',
   player: '/assets/sprites/player_farmer/sheet-transparent.png',
   npcSeedSeller: '/assets/sprites/npc_seed_seller/sheet-transparent.png',
   cropTurnip: '/assets/sprites/crop_turnip/sheet-transparent.png',
   itemsFarming: '/assets/sprites/items_farming/sheet-transparent.png',
-  farmCollision: '/data/farm-collision.json',
-  farmZones: '/data/farm-zones.json',
-  farmProps: '/data/farm-props.json'
+  farmCollision: '/data/farm-v2-collision.json',
+  farmZones: '/data/farm-v2-zones.json',
+  farmProps: '/data/farm-v2-props.json'
 } as const;
 
 export const FrameSize = {

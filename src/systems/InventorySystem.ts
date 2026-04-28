@@ -1,4 +1,5 @@
-import type { GameSave } from '../types/GameState';
+import { CROPS } from '../config/crops';
+import type { CropId, CropItem, GameSave, SeedItem } from '../types/GameState';
 
 export class InventorySystem {
   constructor(private readonly state: GameSave) {}
@@ -8,11 +9,11 @@ export class InventorySystem {
   }
 
   get turnipSeed() {
-    return this.state.inventory.turnipSeed;
+    return this.getSeed('turnip');
   }
 
   get turnipCrop() {
-    return this.state.inventory.turnipCrop;
+    return this.getCrop('turnip');
   }
 
   spendGold(amount: number) {
@@ -27,27 +28,55 @@ export class InventorySystem {
     this.state.gold += amount;
   }
 
+  getSeed(cropId: CropId) {
+    return this.state.inventory[CROPS[cropId].seedItem];
+  }
+
+  addSeed(cropId: CropId, amount: number) {
+    this.state.inventory[CROPS[cropId].seedItem] += amount;
+  }
+
+  removeSeed(cropId: CropId, amount: number) {
+    return this.removeItem(CROPS[cropId].seedItem, amount);
+  }
+
+  getCrop(cropId: CropId) {
+    return this.state.inventory[CROPS[cropId].cropItem];
+  }
+
+  addCrop(cropId: CropId, amount: number) {
+    this.state.inventory[CROPS[cropId].cropItem] += amount;
+  }
+
+  removeCrop(cropId: CropId, amount: number) {
+    return this.removeItem(CROPS[cropId].cropItem, amount);
+  }
+
   addTurnipSeed(amount: number) {
-    this.state.inventory.turnipSeed += amount;
+    this.addSeed('turnip', amount);
   }
 
   removeTurnipSeed(amount: number) {
-    if (this.state.inventory.turnipSeed < amount) {
-      return false;
-    }
-    this.state.inventory.turnipSeed -= amount;
-    return true;
+    return this.removeSeed('turnip', amount);
   }
 
   addTurnipCrop(amount: number) {
-    this.state.inventory.turnipCrop += amount;
+    this.addCrop('turnip', amount);
   }
 
   removeTurnipCrop(amount: number) {
-    if (this.state.inventory.turnipCrop < amount) {
+    return this.removeCrop('turnip', amount);
+  }
+
+  firstSellableCrop() {
+    return (Object.keys(CROPS) as CropId[]).find((cropId) => this.getCrop(cropId) > 0) ?? null;
+  }
+
+  private removeItem(item: SeedItem | CropItem, amount: number) {
+    if (this.state.inventory[item] < amount) {
       return false;
     }
-    this.state.inventory.turnipCrop -= amount;
+    this.state.inventory[item] -= amount;
     return true;
   }
 }

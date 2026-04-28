@@ -23,6 +23,6 @@ export const AssetPath = {
 } as const;
 
 export const FrameSize = {
-  character: { width: 32, height: 48 },
-  tile: { width: 32, height: 32 }
+  character: { frameWidth: 32, frameHeight: 48 },
+  tile: { frameWidth: 32, frameHeight: 32 }
 } as const;

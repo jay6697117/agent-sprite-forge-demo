@@ -11,7 +11,7 @@ export class CropPlot {
   private readonly highlight: Phaser.GameObjects.Rectangle;
 
   constructor(
-    private readonly scene: Phaser.Scene,
+    scene: Phaser.Scene,
     readonly data: FieldPlot,
     private readonly state: PlotSave
   ) {

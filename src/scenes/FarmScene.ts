@@ -19,7 +19,8 @@ const CameraZoom = {
   min: 0.6,
   max: 2.2,
   step: 0.1,
-  initial: 1.5
+  initial: 0.6,
+  displayBase: 0.6
 } as const;
 
 type SpawnOverride = {
@@ -34,6 +35,7 @@ type FarmSceneData = {
 
 export class FarmScene extends Phaser.Scene {
   private player?: Player;
+  private seedSeller?: Npc;
   private state?: GameSave;
   private inventory?: InventorySystem;
   private farming?: FarmingSystem;
@@ -74,34 +76,41 @@ export class FarmScene extends Phaser.Scene {
     }
 
     const inShop = this.activeZone?.kind === 'shop';
+    this.seedSeller?.updatePresence(inShop);
     if (!inShop) {
       this.player.clearShopQueuedActions();
     }
 
     if (inShop && this.player.wasBuyPressed()) {
       const cropId = this.selectedSeedCrop() ?? 'turnip';
-      this.player.playAction('shop', () => {
+      const started = this.player.playAction('shop', () => {
         const result = this.shop?.buySeed(cropId);
         this.showMessage(result?.message ?? '商店还没准备好。');
         if (result?.changed) {
           this.effects?.playGold(feet);
         }
       });
+      if (started) {
+        this.seedSeller?.playInteraction('trade');
+      }
     }
 
     if (inShop && this.player.wasSellPressed()) {
       const cropId = this.selectedSeedCrop() ?? this.inventory.firstSellableCrop();
-      this.player.playAction('shop', () => {
+      const started = this.player.playAction('shop', () => {
         const result = this.shop?.sellCrop(cropId);
         this.showMessage(result?.message ?? '商店还没准备好。');
         if (result?.changed) {
           this.effects?.playGold(feet);
         }
       });
+      if (started) {
+        this.seedSeller?.playInteraction('trade');
+      }
     }
 
     if (inShop && this.player.wasUpgradePressed()) {
-      this.player.playAction('shop', () => {
+      const started = this.player.playAction('shop', () => {
         const result = this.shop?.buyUpgrade();
         this.showMessage(result?.message ?? '商店还没准备好。');
         if (result?.changed) {
@@ -109,6 +118,9 @@ export class FarmScene extends Phaser.Scene {
           this.effects?.playGold(feet);
         }
       });
+      if (started) {
+        this.seedSeller?.playInteraction('trade');
+      }
     }
 
     if (this.player.wasResetPressed()) {
@@ -130,6 +142,7 @@ export class FarmScene extends Phaser.Scene {
   }
 
   private buildWorld(collision: CollisionData, zones: ZoneData, props: PropData, data: FarmSceneData) {
+    this.renderBackdrop(collision);
     this.add.image(0, 0, AssetKey.farmBase).setOrigin(0).setDepth(-1000);
     this.renderProps(props.props);
     this.renderProps(props.foreground, 10000);
@@ -145,7 +158,7 @@ export class FarmScene extends Phaser.Scene {
     }
     this.inventory = new InventorySystem(this.state);
     this.player = new Player(this, this.state.player.x, this.state.player.y, this.state.player.facing, (this.state.upgrades.shoeLevel - 1) * 18);
-    new Npc(this, 1000, 390);
+    this.seedSeller = new Npc(this, 1000, 390);
 
     const collisionSystem = new CollisionSystem(this, collision);
     this.physics.add.collider(this.player, collisionSystem.group);
@@ -161,6 +174,27 @@ export class FarmScene extends Phaser.Scene {
     this.setupZoomControls();
     this.emitUiUpdate();
     this.showMessage(data.spawnOverride ? '回到农场门口。' : '新的一天开始啦。查看订单，种下作物，别忘了留点体力。');
+  }
+
+  private renderBackdrop(collision: CollisionData) {
+    const viewWidth = Math.ceil(this.cameras.main.width / CameraZoom.min);
+    const viewHeight = Math.ceil(this.cameras.main.height / CameraZoom.min);
+    const extraWidth = Math.max(0, viewWidth - collision.mapSize.width);
+    const extraHeight = Math.max(0, viewHeight - collision.mapSize.height);
+
+    if (extraWidth > 0) {
+      const rightEdge = this.add.tileSprite(collision.mapSize.width, 0, extraWidth, Math.max(collision.mapSize.height, viewHeight), AssetKey.farmBase)
+        .setOrigin(0)
+        .setDepth(-2000);
+      rightEdge.setTilePosition(collision.mapSize.width - extraWidth, 0);
+    }
+
+    if (extraHeight > 0) {
+      const bottomEdge = this.add.tileSprite(0, collision.mapSize.height, collision.mapSize.width + extraWidth, extraHeight, AssetKey.farmBase)
+        .setOrigin(0)
+        .setDepth(-2000);
+      bottomEdge.setTilePosition(0, collision.mapSize.height - extraHeight);
+    }
   }
 
   private ensureUiScene() {
@@ -213,9 +247,12 @@ export class FarmScene extends Phaser.Scene {
     }
 
     if (this.activeZone?.kind === 'shop') {
-      this.player.playAction('talk', () => {
+      const started = this.player.playAction('talk', () => {
         this.showMessage('种子商人：B 买当前种子，V 卖作物，U 买升级。完成订单会解锁新商品。');
       });
+      if (started) {
+        this.seedSeller?.playInteraction('talk');
+      }
       return;
     }
 
@@ -308,7 +345,7 @@ export class FarmScene extends Phaser.Scene {
     const zoom = Phaser.Math.Clamp(Number(value.toFixed(2)), CameraZoom.min, CameraZoom.max);
     this.cameras.main.setZoom(zoom);
     if (announce) {
-      this.showMessage(`地图缩放 ${Math.round(zoom * 100)}%`);
+      this.showMessage(`地图缩放 ${Math.round((zoom / CameraZoom.displayBase) * 100)}%`);
     }
   }
 

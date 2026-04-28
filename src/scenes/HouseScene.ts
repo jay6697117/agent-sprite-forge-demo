@@ -21,8 +21,13 @@ type HouseSceneData = {
   spawnOverride?: SpawnOverride;
 };
 
+const BedsidePosition = { x: 142, y: 264 };
 const SleepPosition = { x: 124, y: 174 };
 const WakePosition = { x: 152, y: 266 };
+const SleepZzzPosition = { x: 148, y: 132 };
+const BlanketFoldPosition = { x: 124, y: 228 };
+const BlanketCoverPosition = { x: 124, y: 194 };
+const BlanketSize = { width: 62, foldedHeight: 18, coverHeight: 64 };
 
 export class HouseScene extends Phaser.Scene {
   private player?: Player;
@@ -30,8 +35,10 @@ export class HouseScene extends Phaser.Scene {
   private interaction?: InteractionSystem;
   private effects?: EffectSystem;
   private activeZone?: Zone;
+  private sleepBlanket?: Phaser.GameObjects.Rectangle;
   private farmSpawnOverride: SpawnOverride = { x: 190, y: 315, facing: 'down' };
   private lastInteractAt = 0;
+  private sleepInProgress = false;
 
   constructor() {
     super('HouseScene');
@@ -69,6 +76,11 @@ export class HouseScene extends Phaser.Scene {
       return;
     }
 
+    if (this.sleepInProgress) {
+      this.emitUiUpdate();
+      return;
+    }
+
     this.player.update();
     const feet = this.player.getFeetPoint();
     this.activeZone = this.findActiveZone(feet);
@@ -99,20 +111,153 @@ export class HouseScene extends Phaser.Scene {
     }
 
     if (this.activeZone?.kind === 'bed_sleep' || this.activeZone?.kind === 'next_day') {
-      const state = this.state;
-      this.player.setPosition(SleepPosition.x, SleepPosition.y);
-      this.player.facing = 'right';
-      this.effects.playSleep();
-      this.player.playAction('sleep', () => {
-        const message = advanceDayState(state);
-        SaveSystem.save(state);
-        this.player?.setPosition(WakePosition.x, WakePosition.y);
-        this.showMessage(message);
-      }, 900);
+      this.startSleepSequence();
       return;
     }
 
     this.showMessage('屋里可以睡觉，也可以从门口回农场。');
+  }
+
+  private startSleepSequence() {
+    if (!this.player || !this.state || !this.effects || this.sleepInProgress) {
+      return;
+    }
+
+    const player = this.player;
+    const state = this.state;
+    const effects = this.effects;
+    const sleepFacing: 'left' | 'right' = Phaser.Math.Between(0, 1) === 0 ? 'left' : 'right';
+    this.sleepInProgress = true;
+    this.activeZone = undefined;
+    this.clearSleepBlanket();
+    player.setControlLocked(true);
+    player.setSleepPose(false);
+    player.facing = 'up';
+    this.showMessage('走到床边，准备睡觉。');
+
+    this.movePlayerTo(BedsidePosition, 650)
+      .then(() => {
+        player.facing = 'up';
+        player.setSleepPose(false);
+        this.showMessage('先掀开被子。');
+        return this.openBlanket();
+      })
+      .then(() => {
+        this.showMessage('爬上床，躺好。');
+        return this.movePlayerTo(SleepPosition, 450);
+      })
+      .then(() => {
+        player.facing = sleepFacing;
+        player.setPosition(SleepPosition.x, SleepPosition.y);
+        player.setDepth(SleepPosition.y + 120);
+        player.setSleepPose(true, sleepFacing);
+        this.showMessage('盖好被子，准备睡觉。');
+        return this.coverBlanket();
+      })
+      .then(() => {
+        effects.playZzz(SleepZzzPosition, 3);
+        this.showMessage('晚安，开始睡觉。');
+        return this.wait(1280);
+      })
+      .then(() => {
+        effects.playSleep();
+        return this.wait(340);
+      })
+      .then(() => {
+        const message = advanceDayState(state);
+        SaveSystem.save(state);
+        player.setPosition(WakePosition.x, WakePosition.y);
+        player.facing = 'down';
+        player.setDepth(WakePosition.y + 28);
+        player.setSleepPose(false);
+        player.setControlLocked(false);
+        this.clearSleepBlanket();
+        this.sleepInProgress = false;
+        this.showMessage(message);
+      });
+  }
+
+  private openBlanket() {
+    const blanket = this.createSleepBlanket();
+    blanket.setPosition(BlanketCoverPosition.x, BlanketCoverPosition.y);
+    blanket.setDisplaySize(BlanketSize.width, BlanketSize.coverHeight);
+    blanket.setAlpha(0.95);
+
+    return new Promise<void>((resolve) => {
+      this.tweens.add({
+        targets: blanket,
+        x: BlanketFoldPosition.x,
+        y: BlanketFoldPosition.y,
+        displayHeight: BlanketSize.foldedHeight,
+        angle: 4,
+        duration: 420,
+        ease: 'Sine.easeInOut',
+        onComplete: () => resolve()
+      });
+    });
+  }
+
+  private coverBlanket() {
+    const blanket = this.sleepBlanket ?? this.createSleepBlanket();
+    blanket.setDepth(SleepPosition.y + 180);
+
+    return new Promise<void>((resolve) => {
+      this.tweens.add({
+        targets: blanket,
+        x: BlanketCoverPosition.x,
+        y: BlanketCoverPosition.y,
+        displayWidth: BlanketSize.width,
+        displayHeight: BlanketSize.coverHeight,
+        angle: 0,
+        duration: 520,
+        ease: 'Sine.easeInOut',
+        onComplete: () => resolve()
+      });
+    });
+  }
+
+  private createSleepBlanket() {
+    if (this.sleepBlanket) {
+      return this.sleepBlanket;
+    }
+
+    this.sleepBlanket = this.add.rectangle(
+      BlanketFoldPosition.x,
+      BlanketFoldPosition.y,
+      BlanketSize.width,
+      BlanketSize.foldedHeight,
+      0x6f91c9,
+      0.95
+    ).setOrigin(0.5).setStrokeStyle(2, 0xe8f1ff, 0.9).setDepth(SleepPosition.y + 180);
+    return this.sleepBlanket;
+  }
+
+  private clearSleepBlanket() {
+    this.sleepBlanket?.destroy();
+    this.sleepBlanket = undefined;
+  }
+
+  private movePlayerTo(point: { x: number; y: number }, duration: number) {
+    if (!this.player) {
+      return Promise.resolve();
+    }
+
+    return new Promise<void>((resolve) => {
+      this.tweens.add({
+        targets: this.player,
+        x: point.x,
+        y: point.y,
+        duration,
+        ease: 'Sine.easeInOut',
+        onComplete: () => resolve()
+      });
+    });
+  }
+
+  private wait(duration: number) {
+    return new Promise<void>((resolve) => {
+      this.time.delayedCall(duration, () => resolve());
+    });
   }
 
   private findActiveZone(feet: { x: number; y: number }) {

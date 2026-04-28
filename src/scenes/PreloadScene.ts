@@ -236,6 +236,8 @@ export class PreloadScene extends Phaser.Scene {
     this.createWalkAnimation('left', [4, 5, 6, 7]);
     this.createWalkAnimation('right', [8, 9, 10, 11]);
     this.createWalkAnimation('up', [12, 13, 14, 15]);
+    this.createNpcAnimation('idle-down', [0, 1], 2);
+    this.createNpcAnimation('talk-down', [2, 3], 5);
   }
 
   private createWalkAnimation(direction: string, frames: number[]) {
@@ -251,6 +253,18 @@ export class PreloadScene extends Phaser.Scene {
     });
   }
 
+  private createNpcAnimation(action: string, frames: number[], frameRate: number) {
+    const key = `npc-seed-seller-${action}`;
+    if (this.anims.exists(key)) {
+      return;
+    }
+    this.anims.create({
+      key,
+      frames: this.anims.generateFrameNumbers(AssetKey.npcSeedSeller, { frames }),
+      frameRate,
+      repeat: -1
+    });
+  }
 
   private drawCharacter(ctx: CanvasRenderingContext2D, x: number, y: number, shirt: string, accent: string, step: number) {
     const bob = step === 1 || step === 3 ? 1 : 0;

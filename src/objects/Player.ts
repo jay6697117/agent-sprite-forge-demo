@@ -132,6 +132,29 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.speed = 130 + speedBonus;
   }
 
+  setControlLocked(locked: boolean) {
+    this.actionLocked = locked;
+    const body = this.body as Phaser.Physics.Arcade.Body | null;
+    body?.setVelocity(0, 0);
+  }
+
+  setSleepPose(active: boolean, sleepFacing: 'left' | 'right' = 'right') {
+    this.anims.stop();
+    this.clearTint();
+    if (active) {
+      this.setTexture(AssetKey.player, idleFrame[sleepFacing]);
+      this.setAngle(0);
+      this.setAlpha(0.82);
+      this.setScale(this.baseScaleX * 0.86, this.baseScaleY * 1.02);
+      return;
+    }
+
+    this.setAngle(0);
+    this.setAlpha(1);
+    this.setScale(this.baseScaleX, this.baseScaleY);
+    this.setTexture(AssetKey.player, idleFrame[this.facing]);
+  }
+
   playAction(action: PlayerAction, onComplete: () => void, duration = 360) {
     if (this.actionLocked) {
       return false;

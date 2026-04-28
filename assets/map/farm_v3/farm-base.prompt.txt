@@ -1,0 +1,5 @@
+Generate a seamless walkable right-side extension for a cozy 3/4 top-down pixel art farm map. Use the provided farm map reference for exact style, palette, texture density, lighting, grass detail, dirt path shapes, flower decoration, and warm RPG farming game look. The final extension will be cropped into the rightmost 320 pixels of a 1600x960 Phaser map, attached to the original 1280x960 farm map.
+
+Critical gameplay requirement: the new right-side area must be freely walkable. Do not add buildings, fences, cliffs, walls, big rocks, water, ponds, trees, gates, or any obstacle-like object in the extension. Use mostly grass meadow and soft dirt paths, with only tiny flowers and small flat decorative ground details. The player should visually be able to walk to the top-right, bottom-right, and all right-side corners.
+
+Composition: continue the existing dirt road from the old map's right edge into a gentle open meadow. Blend the left edge naturally with the old farm map; avoid a hard vertical seam. No characters, no UI, no text, no labels, no watermark. Baked raster map background only.

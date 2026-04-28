@@ -51,6 +51,30 @@ export class EffectSystem {
     this.scene.time.delayedCall(320, () => camera.fadeIn(420, 23, 18, 36));
   }
 
+  playZzz(point: { x: number; y: number }, count = 3) {
+    for (let i = 0; i < count; i += 1) {
+      this.scene.time.delayedCall(i * 360, () => {
+        const text = this.scene.add.text(point.x + i * 8, point.y - i * 4, 'Zzz', {
+          fontFamily: 'system-ui, sans-serif',
+          fontSize: `${18 + i * 2}px`,
+          color: '#d9d2ff',
+          stroke: '#241a42',
+          strokeThickness: 4
+        }).setOrigin(0.5).setDepth(point.y + 160);
+        this.scene.tweens.add({
+          targets: text,
+          y: text.y - 44,
+          x: text.x + 18,
+          alpha: 0,
+          scale: 1.25,
+          duration: 920,
+          ease: 'Sine.easeOut',
+          onComplete: () => text.destroy()
+        });
+      });
+    }
+  }
+
   private playPlant(point: { x: number; y: number }) {
     this.floatText(point, '撒种', '#ffe0a3');
     this.playFxSprite(0, point, 44, { alpha: 0, scale: 0.55, duration: 520 });

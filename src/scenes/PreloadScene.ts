@@ -10,6 +10,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image(AssetKey.farmBase, AssetPath.farmBase);
     this.load.image(AssetKey.farmPreview, AssetPath.farmPreview);
     this.load.spritesheet(AssetKey.player, AssetPath.player, FrameSize.character);
+    this.load.spritesheet(AssetKey.playerWalk, AssetPath.playerWalk, FrameSize.character);
     this.load.spritesheet(AssetKey.npcSeedSeller, AssetPath.npcSeedSeller, FrameSize.character);
     this.load.spritesheet(AssetKey.cropTurnip, AssetPath.cropTurnip, FrameSize.tile);
     this.load.spritesheet(AssetKey.itemsFarming, AssetPath.itemsFarming, FrameSize.uiIcon);
@@ -18,15 +19,20 @@ export class PreloadScene extends Phaser.Scene {
     this.load.json(AssetKey.farmCollision, AssetPath.farmCollision);
     this.load.json(AssetKey.farmZones, AssetPath.farmZones);
     this.load.json(AssetKey.farmProps, AssetPath.farmProps);
+    this.load.image(AssetKey.houseBase, AssetPath.houseBase);
+    this.load.json(AssetKey.houseCollision, AssetPath.houseCollision);
+    this.load.json(AssetKey.houseZones, AssetPath.houseZones);
   }
 
   create() {
     this.ensureFarmTexture(AssetKey.farmBase);
     this.ensureFarmTexture(AssetKey.farmPreview);
     this.ensureCharacterTexture(AssetKey.player, '#2959a8', '#d9b45f');
+    this.ensureCharacterTexture(AssetKey.playerWalk, '#2959a8', '#d9b45f');
     this.ensureCharacterTexture(AssetKey.npcSeedSeller, '#7a4b28', '#6aa84f');
     this.ensureCropTexture();
     this.ensureItemTexture();
+    this.ensureHouseTexture();
     this.createAnimations();
     this.scene.start('FarmScene');
   }
@@ -101,17 +107,19 @@ export class PreloadScene extends Phaser.Scene {
       return;
     }
 
-    const texture = this.textures.createCanvas(key, 128, 192);
+    const frameWidth = FrameSize.character.frameWidth;
+    const frameHeight = FrameSize.character.frameHeight;
+    const texture = this.textures.createCanvas(key, frameWidth * 4, frameHeight * 4);
     if (!texture) {
       return;
     }
 
     const ctx = texture.getContext();
     ctx.imageSmoothingEnabled = false;
-    ctx.clearRect(0, 0, 128, 192);
+    ctx.clearRect(0, 0, frameWidth * 4, frameHeight * 4);
     for (let row = 0; row < 4; row += 1) {
       for (let col = 0; col < 4; col += 1) {
-        this.drawCharacter(ctx, col * 32, row * 48, shirt, accent, col);
+        this.drawCharacter(ctx, col * frameWidth + 32, row * frameHeight + 24, shirt, accent, col);
       }
     }
     texture.refresh();
@@ -186,11 +194,48 @@ export class PreloadScene extends Phaser.Scene {
     texture.refresh();
   }
 
+  private ensureHouseTexture() {
+    if (this.textures.exists(AssetKey.houseBase)) {
+      return;
+    }
+
+    const texture = this.textures.createCanvas(AssetKey.houseBase, 640, 480);
+    if (!texture) {
+      return;
+    }
+
+    const ctx = texture.getContext();
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = '#3a2418';
+    ctx.fillRect(0, 0, 640, 480);
+    ctx.fillStyle = '#8b5a32';
+    ctx.fillRect(40, 54, 560, 378);
+    ctx.fillStyle = '#b9824d';
+    for (let y = 74; y < 420; y += 28) {
+      ctx.fillRect(60, y, 520, 3);
+    }
+    ctx.fillStyle = '#5d3423';
+    ctx.fillRect(40, 54, 560, 34);
+    ctx.fillRect(40, 398, 240, 34);
+    ctx.fillRect(360, 398, 240, 34);
+    ctx.fillRect(40, 54, 34, 378);
+    ctx.fillRect(566, 54, 34, 378);
+    ctx.fillStyle = '#6f3f2b';
+    ctx.fillRect(90, 118, 154, 82);
+    ctx.fillStyle = '#e9d39c';
+    ctx.fillRect(110, 136, 114, 44);
+    ctx.fillStyle = '#6a482e';
+    ctx.fillRect(382, 132, 128, 72);
+    ctx.fillStyle = '#3f2a1b';
+    ctx.fillRect(286, 402, 68, 30);
+    texture.refresh();
+  }
+
   private createAnimations() {
-    this.createWalkAnimation('down', [0]);
-    this.createWalkAnimation('left', [4]);
-    this.createWalkAnimation('right', [8]);
-    this.createWalkAnimation('up', [12]);
+    this.createWalkAnimation('down', [0, 1, 2, 3]);
+    this.createWalkAnimation('left', [4, 5, 6, 7]);
+    this.createWalkAnimation('right', [8, 9, 10, 11]);
+    this.createWalkAnimation('up', [12, 13, 14, 15]);
   }
 
   private createWalkAnimation(direction: string, frames: number[]) {
@@ -200,11 +245,12 @@ export class PreloadScene extends Phaser.Scene {
     }
     this.anims.create({
       key,
-      frames: this.anims.generateFrameNumbers(AssetKey.player, { frames }),
+      frames: this.anims.generateFrameNumbers(AssetKey.playerWalk, { frames }),
       frameRate: 8,
       repeat: -1
     });
   }
+
 
   private drawCharacter(ctx: CanvasRenderingContext2D, x: number, y: number, shirt: string, accent: string, step: number) {
     const bob = step === 1 || step === 3 ? 1 : 0;

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import './style.css';
 import { FarmScene } from './scenes/FarmScene';
+import { HouseScene } from './scenes/HouseScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { UIScene } from './scenes/UIScene';
 
@@ -22,5 +23,5 @@ new Phaser.Game({
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
-  scene: [PreloadScene, FarmScene, UIScene]
+  scene: [PreloadScene, FarmScene, HouseScene, UIScene]
 });

@@ -114,7 +114,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     } else {
       body.setVelocity(0, 0);
       this.anims.stop();
-      this.setFrame(idleFrame[this.facing]);
+      this.setTexture(AssetKey.player, idleFrame[this.facing]);
     }
 
     this.setDepth(this.y + 28);
@@ -139,7 +139,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.actionLocked = true;
     this.anims.stop();
-    this.setFrame(this.actionFrame(action));
+    this.setTexture(AssetKey.player, this.actionFrame(action));
     this.setTint(actionTint[action]);
 
     const tweenConfig = this.actionTween(action);
@@ -157,7 +157,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.setScale(this.baseScaleX, this.baseScaleY);
       this.setAngle(0);
       this.setAlpha(1);
-      this.setFrame(idleFrame[this.facing]);
+      this.setTexture(AssetKey.player, idleFrame[this.facing]);
       onComplete();
     });
     return true;
@@ -283,7 +283,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       return { scaleX: this.baseScaleX * 1.15, scaleY: this.baseScaleY * 0.95 };
     }
     if (action === 'sleep') {
-      return { alpha: 0.45 };
+      return { alpha: 0.45, angle: this.facing === 'left' ? -90 : 90 };
     }
     return { scaleX: this.baseScaleX * 1.08, scaleY: this.baseScaleY * 1.08 };
   }

@@ -1,0 +1,108 @@
+{
+  "mapSize": {
+    "width": 640,
+    "height": 480
+  },
+  "spawn": {
+    "x": 320,
+    "y": 414
+  },
+  "blockers": [
+    {
+      "id": "north-boundary",
+      "type": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 640,
+      "h": 24
+    },
+    {
+      "id": "south-boundary-left",
+      "type": "rect",
+      "x": 0,
+      "y": 456,
+      "w": 270,
+      "h": 24
+    },
+    {
+      "id": "south-boundary-right",
+      "type": "rect",
+      "x": 370,
+      "y": 456,
+      "w": 270,
+      "h": 24
+    },
+    {
+      "id": "south-door-threshold",
+      "type": "rect",
+      "x": 270,
+      "y": 468,
+      "w": 100,
+      "h": 12
+    },
+    {
+      "id": "west-boundary",
+      "type": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 480
+    },
+    {
+      "id": "east-boundary",
+      "type": "rect",
+      "x": 616,
+      "y": 0,
+      "w": 24,
+      "h": 480
+    },
+    {
+      "id": "bed",
+      "type": "rect",
+      "x": 64,
+      "y": 72,
+      "w": 120,
+      "h": 156
+    },
+    {
+      "id": "cabinet",
+      "type": "rect",
+      "x": 260,
+      "y": 64,
+      "w": 120,
+      "h": 48
+    },
+    {
+      "id": "table",
+      "type": "rect",
+      "x": 422,
+      "y": 92,
+      "w": 116,
+      "h": 78
+    },
+    {
+      "id": "chair",
+      "type": "rect",
+      "x": 456,
+      "y": 176,
+      "w": 48,
+      "h": 42
+    },
+    {
+      "id": "storage-crate-left",
+      "type": "rect",
+      "x": 72,
+      "y": 336,
+      "w": 72,
+      "h": 64
+    },
+    {
+      "id": "storage-crate-right",
+      "type": "rect",
+      "x": 164,
+      "y": 352,
+      "w": 76,
+      "h": 48
+    }
+  ]
+}

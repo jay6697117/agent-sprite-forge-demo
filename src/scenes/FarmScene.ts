@@ -12,15 +12,25 @@ import { InventorySystem } from '../systems/InventorySystem';
 import { OrderSystem } from '../systems/OrderSystem';
 import { SaveSystem } from '../systems/SaveSystem';
 import { ShopSystem } from '../systems/ShopSystem';
-import type { CollisionData, PropData, PropPlacement, Zone, ZoneData } from '../types/MapData';
+import type { CollisionData, Facing, PropData, PropPlacement, Zone, ZoneData } from '../types/MapData';
 import type { CropId, GameSave } from '../types/GameState';
 
 const CameraZoom = {
-  min: 1,
+  min: 0.6,
   max: 2.2,
   step: 0.1,
   initial: 1.5
 } as const;
+
+type SpawnOverride = {
+  x: number;
+  y: number;
+  facing?: Facing;
+};
+
+type FarmSceneData = {
+  spawnOverride?: SpawnOverride;
+};
 
 export class FarmScene extends Phaser.Scene {
   private player?: Player;
@@ -39,13 +49,13 @@ export class FarmScene extends Phaser.Scene {
     super('FarmScene');
   }
 
-  create() {
+  create(data: FarmSceneData = {}) {
     const collision = (this.cache.json.get(AssetKey.farmCollision) as CollisionData | undefined) ?? createFallbackCollision();
     const zones = (this.cache.json.get(AssetKey.farmZones) as ZoneData | undefined) ?? createFallbackZones();
     const props = (this.cache.json.get(AssetKey.farmProps) as PropData | undefined) ?? createFallbackProps();
 
-    this.scene.launch('UIScene');
-    this.loadProps(props, () => this.buildWorld(collision, zones, props));
+    this.ensureUiScene();
+    this.loadProps(props, () => this.buildWorld(collision, zones, props, data));
   }
 
   update(time: number) {
@@ -119,7 +129,7 @@ export class FarmScene extends Phaser.Scene {
     this.emitUiUpdate();
   }
 
-  private buildWorld(collision: CollisionData, zones: ZoneData, props: PropData) {
+  private buildWorld(collision: CollisionData, zones: ZoneData, props: PropData, data: FarmSceneData) {
     this.add.image(0, 0, AssetKey.farmBase).setOrigin(0).setDepth(-1000);
     this.renderProps(props.props);
     this.renderProps(props.foreground, 10000);
@@ -128,6 +138,11 @@ export class FarmScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, collision.mapSize.width, collision.mapSize.height);
 
     this.state = SaveSystem.load(zones.fieldPlots, collision.spawn);
+    if (data.spawnOverride) {
+      this.state.player.x = data.spawnOverride.x;
+      this.state.player.y = data.spawnOverride.y;
+      this.state.player.facing = data.spawnOverride.facing ?? this.state.player.facing;
+    }
     this.inventory = new InventorySystem(this.state);
     this.player = new Player(this, this.state.player.x, this.state.player.y, this.state.player.facing, (this.state.upgrades.shoeLevel - 1) * 18);
     new Npc(this, 1000, 390);
@@ -145,7 +160,13 @@ export class FarmScene extends Phaser.Scene {
     this.setCameraZoom(CameraZoom.initial);
     this.setupZoomControls();
     this.emitUiUpdate();
-    this.showMessage('新的一天开始啦。查看订单，种下作物，别忘了留点体力。');
+    this.showMessage(data.spawnOverride ? '回到农场门口。' : '新的一天开始啦。查看订单，种下作物，别忘了留点体力。');
+  }
+
+  private ensureUiScene() {
+    if (!this.scene.isActive('UIScene')) {
+      this.scene.launch('UIScene');
+    }
   }
 
   private loadProps(props: PropData, onComplete: () => void) {
@@ -187,7 +208,7 @@ export class FarmScene extends Phaser.Scene {
   }
 
   private handleInteraction(feet: { x: number; y: number }) {
-    if (!this.player || !this.farming || !this.effects) {
+    if (!this.player || !this.state || !this.farming || !this.effects) {
       return;
     }
 
@@ -195,6 +216,16 @@ export class FarmScene extends Phaser.Scene {
       this.player.playAction('talk', () => {
         this.showMessage('种子商人：B 买当前种子，V 卖作物，U 买升级。完成订单会解锁新商品。');
       });
+      return;
+    }
+
+    if (this.activeZone?.kind === 'enter_house') {
+      const farmSpawnOverride: SpawnOverride = { x: this.player.x, y: this.player.y, facing: 'down' };
+      this.state.player.x = this.player.x;
+      this.state.player.y = this.player.y;
+      this.state.player.facing = this.player.facing;
+      SaveSystem.save(this.state);
+      this.scene.start('HouseScene', { farmSpawnOverride });
       return;
     }
 

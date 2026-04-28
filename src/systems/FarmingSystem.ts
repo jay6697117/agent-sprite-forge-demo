@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 import { CROPS, cropForTool } from '../config/crops';
-import { createDailyOrders } from '../config/orders';
 import { CropPlot } from '../objects/CropPlot';
 import type { CropId, GameSave, PlotSave } from '../types/GameState';
 import type { FieldPlot, ToolId } from '../types/MapData';
+import { advanceDayState } from './DaySystem';
 import { InventorySystem } from './InventorySystem';
 import { SaveSystem } from './SaveSystem';
 
@@ -60,19 +60,10 @@ export class FarmingSystem {
   }
 
   advanceDay() {
-    for (const plot of this.plots) {
-      const plotState = this.state.plots[plot.data.id];
-      if (plotState.cropId && plotState.wateredToday && plotState.stage < CROPS[plotState.cropId].maxStage) {
-        plotState.stage += 1;
-      }
-      plotState.wateredToday = false;
-      plot.refresh();
-    }
-    this.state.day += 1;
-    this.state.energy = this.state.maxEnergy;
-    this.state.orders = createDailyOrders(this.state.day, this.state.unlocks);
+    const message = advanceDayState(this.state);
+    this.refreshAll();
     SaveSystem.save(this.state);
-    return `晚安。第 ${this.state.day} 天开始了，体力已恢复。`;
+    return message;
   }
 
   refreshAll() {

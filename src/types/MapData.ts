@@ -28,7 +28,7 @@ export type CollisionData = {
 };
 
 export type Zone = Shape & {
-  kind: 'shop' | 'next_day' | 'info';
+  kind: 'shop' | 'next_day' | 'info' | 'enter_house' | 'exit_house' | 'bed_sleep';
   prompt?: string;
 };
 

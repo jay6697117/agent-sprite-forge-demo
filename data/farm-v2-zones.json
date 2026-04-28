@@ -11,14 +11,14 @@
       "prompt": "按 E 与种子商人交谈"
     },
     {
-      "id": "sleep_next_day",
-      "kind": "next_day",
+      "id": "house_door",
+      "kind": "enter_house",
       "type": "rect",
-      "x": 96,
-      "y": 284,
-      "w": 180,
-      "h": 86,
-      "prompt": "按 E 睡觉并进入下一天"
+      "x": 158,
+      "y": 288,
+      "w": 64,
+      "h": 54,
+      "prompt": "按 E 进屋"
     },
     {
       "id": "order_board",

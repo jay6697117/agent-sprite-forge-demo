@@ -63,27 +63,41 @@ export class FarmScene extends Phaser.Scene {
       this.handleInteraction(feet);
     }
 
-    if (this.activeZone?.kind === 'shop' && this.player.wasBuyPressed()) {
+    const inShop = this.activeZone?.kind === 'shop';
+    if (!inShop) {
+      this.player.clearShopQueuedActions();
+    }
+
+    if (inShop && this.player.wasBuyPressed()) {
       const cropId = this.selectedSeedCrop() ?? 'turnip';
       this.player.playAction('shop', () => {
-        this.showMessage(this.shop?.buySeed(cropId) ?? '商店还没准备好。');
-        this.effects?.playGold(feet);
+        const result = this.shop?.buySeed(cropId);
+        this.showMessage(result?.message ?? '商店还没准备好。');
+        if (result?.changed) {
+          this.effects?.playGold(feet);
+        }
       });
     }
 
-    if (this.activeZone?.kind === 'shop' && this.player.wasSellPressed()) {
+    if (inShop && this.player.wasSellPressed()) {
       const cropId = this.selectedSeedCrop() ?? this.inventory.firstSellableCrop();
       this.player.playAction('shop', () => {
-        this.showMessage(this.shop?.sellCrop(cropId) ?? '商店还没准备好。');
-        this.effects?.playGold(feet);
+        const result = this.shop?.sellCrop(cropId);
+        this.showMessage(result?.message ?? '商店还没准备好。');
+        if (result?.changed) {
+          this.effects?.playGold(feet);
+        }
       });
     }
 
-    if (this.activeZone?.kind === 'shop' && this.player.wasUpgradePressed()) {
+    if (inShop && this.player.wasUpgradePressed()) {
       this.player.playAction('shop', () => {
-        this.showMessage(this.shop?.buyUpgrade() ?? '商店还没准备好。');
-        this.player?.setSpeedBonus(((this.state?.upgrades.shoeLevel ?? 1) - 1) * 18);
-        this.effects?.playGold(feet);
+        const result = this.shop?.buyUpgrade();
+        this.showMessage(result?.message ?? '商店还没准备好。');
+        if (result?.changed) {
+          this.player?.setSpeedBonus(((this.state?.upgrades.shoeLevel ?? 1) - 1) * 18);
+          this.effects?.playGold(feet);
+        }
       });
     }
 
@@ -108,6 +122,7 @@ export class FarmScene extends Phaser.Scene {
   private buildWorld(collision: CollisionData, zones: ZoneData, props: PropData) {
     this.add.image(0, 0, AssetKey.farmBase).setOrigin(0).setDepth(-1000);
     this.renderProps(props.props);
+    this.renderProps(props.foreground, 10000);
 
     this.physics.world.setBounds(0, 0, collision.mapSize.width, collision.mapSize.height);
     this.cameras.main.setBounds(0, 0, collision.mapSize.width, collision.mapSize.height);
@@ -153,17 +168,20 @@ export class FarmScene extends Phaser.Scene {
     this.load.start();
   }
 
-  private renderProps(props: PropPlacement[] = []) {
+  private renderProps(props: PropPlacement[] = [], depthOffset = 0) {
     for (const prop of props) {
       const key = this.propKey(prop);
+      const [originX, originY] = this.propOrigin(prop.anchor);
+      const depth = (prop.sortY ?? prop.y) + depthOffset;
       if (this.textures.exists(key)) {
         this.add.image(prop.x, prop.y, key)
-          .setOrigin(0.5, 1)
+          .setOrigin(originX, originY)
           .setDisplaySize(prop.w, prop.h)
-          .setDepth(prop.sortY ?? prop.y);
+          .setDepth(depth);
       } else {
-        this.add.rectangle(prop.x, prop.y - prop.h / 2, prop.w, prop.h, 0x5d7f34, 0.45)
-          .setDepth(prop.sortY ?? prop.y);
+        this.add.rectangle(prop.x, prop.y, prop.w, prop.h, 0x5d7f34, 0.45)
+          .setOrigin(originX, originY)
+          .setDepth(depth);
       }
     }
   }
@@ -190,8 +208,11 @@ export class FarmScene extends Phaser.Scene {
 
     if (this.activeZone?.kind === 'info') {
       this.player.playAction('talk', () => {
-        this.showMessage(this.orders?.completeReadyOrders() ?? '公告板还没有订单。');
-        this.effects?.playGold(feet);
+        const result = this.orders?.completeReadyOrders();
+        this.showMessage(result?.message ?? '公告板还没有订单。');
+        if (result?.changed) {
+          this.effects?.playGold(feet);
+        }
       });
       return;
     }
@@ -245,7 +266,7 @@ export class FarmScene extends Phaser.Scene {
   }
 
   private handleWheelZoom(_pointer: Phaser.Input.Pointer, _gameObjects: Phaser.GameObjects.GameObject[], _deltaX: number, deltaY: number) {
-    this.changeCameraZoom(deltaY < 0 ? CameraZoom.step : -CameraZoom.step);
+    this.changeCameraZoom(deltaY < 0 ? CameraZoom.step : -CameraZoom.step, true);
   }
 
   private changeCameraZoom(delta: number, announce = false) {
@@ -284,6 +305,13 @@ export class FarmScene extends Phaser.Scene {
   private showMessage(message: string) {
     this.game.events.emit('ui:message', message);
     this.emitUiUpdate();
+  }
+
+  private propOrigin(anchor: PropPlacement['anchor'] = 'center-bottom'): [number, number] {
+    if (anchor === 'top-left') return [0, 0];
+    if (anchor === 'center') return [0.5, 0.5];
+    if (anchor === 'bottom-left') return [0, 1];
+    return [0.5, 1];
   }
 
   private propKey(prop: PropPlacement) {

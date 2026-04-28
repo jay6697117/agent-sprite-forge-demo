@@ -3,13 +3,18 @@ import type { GameSave } from '../types/GameState';
 import { InventorySystem } from './InventorySystem';
 import { SaveSystem } from './SaveSystem';
 
+export type OrderResult = {
+  message: string;
+  changed: boolean;
+};
+
 export class OrderSystem {
   constructor(
     private readonly state: GameSave,
     private readonly inventory: InventorySystem
   ) {}
 
-  completeReadyOrders() {
+  completeReadyOrders(): OrderResult {
     const completed: string[] = [];
     for (const order of this.state.orders) {
       if (order.completed || this.inventory.getCrop(order.cropId) < order.amount) {
@@ -24,12 +29,12 @@ export class OrderSystem {
     }
 
     if (completed.length === 0) {
-      return '订单还没准备好：先种出需要的作物吧。';
+      return { message: '订单还没准备好：先种出需要的作物吧。', changed: false };
     }
 
     const unlockMessage = this.applyUnlocks();
     SaveSystem.save(this.state);
-    return `交付订单：${completed.join('、')}。金币和声望增加了。${unlockMessage}`;
+    return { message: `交付订单：${completed.join('、')}。金币和声望增加了。${unlockMessage}`, changed: true };
   }
 
   private applyUnlocks() {

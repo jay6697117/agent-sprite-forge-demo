@@ -33,6 +33,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private baseScaleY = 1;
   private speed: number;
   private actionLocked = false;
+  private interactQueued = false;
+  private buyQueued = false;
+  private sellQueued = false;
+  private upgradeQueued = false;
+  private resetQueued = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number, facing: Facing, speedBonus = 0) {
     super(scene, x, y, AssetKey.player, idleFrame[facing]);
@@ -159,23 +164,46 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   wasInteractPressed() {
-    return !this.actionLocked && Phaser.Input.Keyboard.JustDown(this.keys.e);
+    if (this.actionLocked) {
+      return false;
+    }
+    const queued = this.consumeQueued('interactQueued');
+    return queued || Phaser.Input.Keyboard.JustDown(this.keys.e);
   }
 
   wasBuyPressed() {
-    return !this.actionLocked && Phaser.Input.Keyboard.JustDown(this.keys.b);
+    if (this.actionLocked) {
+      return false;
+    }
+    const queued = this.consumeQueued('buyQueued');
+    return queued || Phaser.Input.Keyboard.JustDown(this.keys.b);
   }
 
   wasSellPressed() {
-    return !this.actionLocked && Phaser.Input.Keyboard.JustDown(this.keys.v);
+    if (this.actionLocked) {
+      return false;
+    }
+    const queued = this.consumeQueued('sellQueued');
+    return queued || Phaser.Input.Keyboard.JustDown(this.keys.v);
   }
 
   wasUpgradePressed() {
-    return !this.actionLocked && Phaser.Input.Keyboard.JustDown(this.keys.u);
+    if (this.actionLocked) {
+      return false;
+    }
+    const queued = this.consumeQueued('upgradeQueued');
+    return queued || Phaser.Input.Keyboard.JustDown(this.keys.u);
   }
 
   wasResetPressed() {
-    return Phaser.Input.Keyboard.JustDown(this.keys.r);
+    const queued = this.consumeQueued('resetQueued');
+    return queued || Phaser.Input.Keyboard.JustDown(this.keys.r);
+  }
+
+  clearShopQueuedActions() {
+    this.buyQueued = false;
+    this.sellQueued = false;
+    this.upgradeQueued = false;
   }
 
   private updateToolSelection() {
@@ -197,6 +225,25 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   private handleKeyDown(event: KeyboardEvent) {
+    if (event.repeat) {
+      return;
+    }
+
+    if (event.key === 'e' || event.key === 'E' || event.code === 'KeyE') {
+      this.interactQueued = true;
+    }
+    if (event.key === 'b' || event.key === 'B' || event.code === 'KeyB') {
+      this.buyQueued = true;
+    }
+    if (event.key === 'v' || event.key === 'V' || event.code === 'KeyV') {
+      this.sellQueued = true;
+    }
+    if (event.key === 'u' || event.key === 'U' || event.code === 'KeyU') {
+      this.upgradeQueued = true;
+    }
+    if (event.key === 'r' || event.key === 'R' || event.code === 'KeyR') {
+      this.resetQueued = true;
+    }
     if (event.key === '1' || event.code === 'Digit1' || event.code === 'Numpad1') {
       this.selectedTool = 'turnip_seed';
     }
@@ -212,6 +259,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (event.key === '5' || event.code === 'Digit5' || event.code === 'Numpad5') {
       this.selectedTool = 'hand';
     }
+  }
+
+  private consumeQueued(key: 'interactQueued' | 'buyQueued' | 'sellQueued' | 'upgradeQueued' | 'resetQueued') {
+    const queued = this[key];
+    this[key] = false;
+    return queued;
   }
 
   private actionFrame(action: PlayerAction) {

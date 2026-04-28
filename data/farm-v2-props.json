@@ -64,10 +64,10 @@
       "id": "fence_south",
       "image": "assets/props/farm_v2/fence_pack.png",
       "x": 470,
-      "y": 835,
+      "y": 895,
       "w": 410,
       "h": 96,
-      "sortY": 835,
+      "sortY": 895,
       "anchor": "center-bottom"
     },
     {

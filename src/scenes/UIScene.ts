@@ -191,8 +191,7 @@ export class UIScene extends Phaser.Scene {
       item.text.setScale(selected ? 1.08 : 1);
     }
 
-    const unlockHint = state.unlocks.strawberry ? '' : '  草莓需声望 2 解锁';
-    this.promptText.setText(state.prompt ? `${state.prompt}${unlockHint}` : '');
+    this.promptText.setText(state.prompt);
     this.promptPanel.setVisible(Boolean(state.prompt));
   }
 

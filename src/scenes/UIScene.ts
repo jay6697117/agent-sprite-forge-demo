@@ -228,15 +228,15 @@ export class UIScene extends Phaser.Scene {
   }
 
   private createMessageBubble() {
-    this.messageBg = this.add.rectangle(480, 344, 560, 44, 0x5a351f, 0.94).setStrokeStyle(3, 0xf4d28b, 0.95);
-    this.messageText = this.add.text(480, 344, '', {
+    this.messageBg = this.add.rectangle(480, 76, 380, 34, 0x5a351f, 0.86).setStrokeStyle(2, 0xf4d28b, 0.9);
+    this.messageText = this.add.text(480, 76, '', {
       fontFamily: 'system-ui, sans-serif',
-      fontSize: '17px',
+      fontSize: '14px',
       color: '#fff2c8',
       align: 'center',
-      wordWrap: { width: 520 },
+      wordWrap: { width: 340 },
       stroke: '#2a170d',
-      strokeThickness: 3
+      strokeThickness: 2
     }).setOrigin(0.5);
     this.messagePanel = this.add.container(0, 0, [this.messageBg, this.messageText]).setDepth(1001).setVisible(false);
   }

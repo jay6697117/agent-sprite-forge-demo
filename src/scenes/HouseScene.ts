@@ -26,10 +26,10 @@ const BedsidePosition = { x: 142, y: 264 };
 const SleepPosition = { x: 124, y: 138 };
 const WakePosition = { x: 152, y: 266 };
 const SleepZzzPosition = { x: 148, y: 132 };
-const BlanketNormalPosition = { x: 124, y: 166 };
-const BlanketFoldPosition = { x: 124, y: 193 };
-const BlanketCoverPosition = { x: 124, y: 205 };
-const BlanketDisplaySize = { width: 172, height: 118 };
+const BlanketNormalPosition = { x: 118, y: 175 };
+const BlanketFoldPosition = { x: 118, y: 183 };
+const BlanketCoverPosition = { x: 118, y: 189 };
+const BlanketDisplaySize = { width: 142, height: 112 };
 const BlanketFrame = { normal: 0, folded: 1, covered: 2 } as const;
 
 export class HouseScene extends Phaser.Scene {

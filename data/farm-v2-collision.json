@@ -44,9 +44,9 @@
       "id": "farmhouse-upper-body",
       "type": "rect",
       "x": 62,
-      "y": 156,
+      "y": 84,
       "w": 256,
-      "h": 100
+      "h": 172
     },
     {
       "id": "farmhouse-lower-left",
@@ -55,6 +55,14 @@
       "y": 256,
       "w": 92,
       "h": 62
+    },
+    {
+      "id": "farmhouse-door-interior",
+      "type": "rect",
+      "x": 154,
+      "y": 256,
+      "w": 72,
+      "h": 56
     },
     {
       "id": "farmhouse-lower-right",
@@ -91,42 +99,58 @@
     {
       "id": "pond-water-top",
       "type": "rect",
-      "x": 884,
+      "x": 900,
       "y": 520,
-      "w": 204,
-      "h": 42
+      "w": 170,
+      "h": 24
+    },
+    {
+      "id": "pond-water-upper-left",
+      "type": "rect",
+      "x": 850,
+      "y": 544,
+      "w": 250,
+      "h": 30
     },
     {
       "id": "pond-water-upper-mid",
       "type": "rect",
-      "x": 838,
-      "y": 562,
-      "w": 296,
-      "h": 52
+      "x": 810,
+      "y": 574,
+      "w": 315,
+      "h": 38
     },
     {
-      "id": "pond-water-center",
+      "id": "pond-water-center-left",
       "type": "rect",
-      "x": 802,
-      "y": 614,
-      "w": 358,
-      "h": 70
+      "x": 782,
+      "y": 612,
+      "w": 340,
+      "h": 44
+    },
+    {
+      "id": "pond-water-center-right",
+      "type": "rect",
+      "x": 800,
+      "y": 656,
+      "w": 322,
+      "h": 44
     },
     {
       "id": "pond-water-lower-mid",
       "type": "rect",
-      "x": 830,
-      "y": 684,
-      "w": 300,
-      "h": 54
+      "x": 832,
+      "y": 700,
+      "w": 270,
+      "h": 40
     },
     {
       "id": "pond-water-bottom",
       "type": "rect",
-      "x": 888,
-      "y": 738,
-      "w": 186,
-      "h": 42
+      "x": 890,
+      "y": 740,
+      "w": 180,
+      "h": 38
     },
     {
       "id": "tree-pond-trunk",
@@ -161,36 +185,116 @@
       "h": 30
     },
     {
-      "id": "flower-garden-north-fence",
+      "id": "flower-garden-north-west-post",
       "type": "rect",
-      "x": 1246,
-      "y": 474,
-      "w": 246,
-      "h": 36
+      "x": 1176,
+      "y": 510,
+      "w": 26,
+      "h": 54
     },
     {
-      "id": "flower-garden-west-fence",
+      "id": "flower-garden-north-left-rail",
       "type": "rect",
-      "x": 1198,
-      "y": 542,
-      "w": 38,
-      "h": 224
+      "x": 1186,
+      "y": 494,
+      "w": 120,
+      "h": 20
     },
     {
-      "id": "flower-garden-east-fence",
+      "id": "flower-garden-north-middle-rail",
       "type": "rect",
-      "x": 1498,
-      "y": 528,
-      "w": 40,
-      "h": 210
+      "x": 1296,
+      "y": 480,
+      "w": 164,
+      "h": 20
     },
     {
-      "id": "flower-garden-south-fence",
+      "id": "flower-garden-north-east-rail",
       "type": "rect",
-      "x": 1220,
-      "y": 756,
-      "w": 292,
-      "h": 42
+      "x": 1448,
+      "y": 504,
+      "w": 68,
+      "h": 22
+    },
+    {
+      "id": "flower-garden-northeast-post",
+      "type": "rect",
+      "x": 1492,
+      "y": 518,
+      "w": 36,
+      "h": 44
+    },
+    {
+      "id": "flower-garden-west-rail",
+      "type": "rect",
+      "x": 1178,
+      "y": 540,
+      "w": 20,
+      "h": 146
+    },
+    {
+      "id": "flower-garden-southwest-post",
+      "type": "rect",
+      "x": 1172,
+      "y": 674,
+      "w": 30,
+      "h": 48
+    },
+    {
+      "id": "flower-garden-southwest-rail-a",
+      "type": "rect",
+      "x": 1188,
+      "y": 704,
+      "w": 64,
+      "h": 18
+    },
+    {
+      "id": "flower-garden-southwest-rail-b",
+      "type": "rect",
+      "x": 1244,
+      "y": 720,
+      "w": 60,
+      "h": 18
+    },
+    {
+      "id": "flower-garden-left-gate-post",
+      "type": "rect",
+      "x": 1302,
+      "y": 728,
+      "w": 34,
+      "h": 56
+    },
+    {
+      "id": "flower-garden-right-gate-post",
+      "type": "rect",
+      "x": 1406,
+      "y": 724,
+      "w": 32,
+      "h": 60
+    },
+    {
+      "id": "flower-garden-southeast-rail-a",
+      "type": "rect",
+      "x": 1430,
+      "y": 744,
+      "w": 70,
+      "h": 20
+    },
+    {
+      "id": "flower-garden-southeast-rail-b",
+      "type": "rect",
+      "x": 1488,
+      "y": 760,
+      "w": 45,
+      "h": 20
+    },
+    {
+      "id": "flower-garden-east-rail",
+      "type": "rect",
+      "x": 1504,
+      "y": 540,
+      "w": 28,
+      "h": 202
     }
   ]
 }

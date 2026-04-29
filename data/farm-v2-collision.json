@@ -117,7 +117,7 @@
       "type": "rect",
       "x": 810,
       "y": 574,
-      "w": 315,
+      "w": 308,
       "h": 38
     },
     {
@@ -141,7 +141,7 @@
       "type": "rect",
       "x": 832,
       "y": 700,
-      "w": 270,
+      "w": 288,
       "h": 40
     },
     {
@@ -149,7 +149,7 @@
       "type": "rect",
       "x": 890,
       "y": 740,
-      "w": 180,
+      "w": 210,
       "h": 38
     },
     {
@@ -187,10 +187,10 @@
     {
       "id": "flower-garden-north-west-post",
       "type": "rect",
-      "x": 1176,
+      "x": 1206,
       "y": 510,
-      "w": 26,
-      "h": 54
+      "w": 28,
+      "h": 58
     },
     {
       "id": "flower-garden-north-left-rail",
@@ -227,34 +227,34 @@
     {
       "id": "flower-garden-west-rail",
       "type": "rect",
-      "x": 1178,
+      "x": 1208,
       "y": 540,
-      "w": 20,
-      "h": 146
+      "w": 26,
+      "h": 160
     },
     {
       "id": "flower-garden-southwest-post",
       "type": "rect",
-      "x": 1172,
+      "x": 1204,
       "y": 674,
       "w": 30,
-      "h": 48
+      "h": 50
     },
     {
       "id": "flower-garden-southwest-rail-a",
       "type": "rect",
-      "x": 1188,
+      "x": 1206,
       "y": 704,
-      "w": 64,
-      "h": 18
+      "w": 76,
+      "h": 22
     },
     {
       "id": "flower-garden-southwest-rail-b",
       "type": "rect",
-      "x": 1244,
+      "x": 1268,
       "y": 720,
-      "w": 60,
-      "h": 18
+      "w": 38,
+      "h": 22
     },
     {
       "id": "flower-garden-left-gate-post",

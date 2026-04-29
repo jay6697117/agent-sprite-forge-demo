@@ -24,6 +24,13 @@ const CameraZoom = {
   displayBase: 0.6
 } as const;
 
+type ScreenBounds = {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+};
+
 type SpawnOverride = {
   x: number;
   y: number;
@@ -368,8 +375,26 @@ export class FarmScene extends Phaser.Scene {
       friendship: this.state.friendship,
       unlocks: this.state.unlocks,
       tool: this.player.selectedTool,
-      prompt: InteractionSystem.promptFor(this.activeZone)
+      prompt: InteractionSystem.promptFor(this.activeZone),
+      playerBounds: this.playerScreenBounds()
     });
+  }
+
+  private playerScreenBounds(): ScreenBounds | undefined {
+    if (!this.player) {
+      return undefined;
+    }
+
+    const camera = this.cameras.main;
+    const zoom = camera.zoom;
+    const screenX = camera.x + (this.player.x - camera.worldView.x) * zoom;
+    const screenY = camera.y + (this.player.y - camera.worldView.y) * zoom;
+    return {
+      left: screenX - 34 * zoom,
+      top: screenY - 42 * zoom,
+      right: screenX + 34 * zoom,
+      bottom: screenY + 36 * zoom
+    };
   }
 
   private showMessage(message: string) {

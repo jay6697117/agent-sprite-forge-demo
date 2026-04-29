@@ -25,7 +25,7 @@ export const AssetPath = {
   playerWalk: '/assets/sprites/player_farmer_v2/walk/sheet-transparent.png',
   npcSeedSeller: '/assets/sprites/npc_seed_seller_v2/sheet-transparent.png',
   cropTurnip: '/assets/sprites/crops_v2/sheet-transparent.png',
-  itemsFarming: '/assets/sprites/ui_icons/sheet-transparent.png',
+  itemsFarming: '/assets/sprites/items_farming/sheet-transparent.png',
   fxFarming: '/assets/sprites/fx_farming/sheet-transparent.png',
   uiIcons: '/assets/sprites/ui_icons/sheet-transparent.png',
   farmCollision: '/data/farm-v2-collision.json',
@@ -43,5 +43,6 @@ export const FrameSize = {
   tile: { frameWidth: 128, frameHeight: 128 },
   fx: { frameWidth: 128, frameHeight: 128 },
   uiIcon: { frameWidth: 128, frameHeight: 128 },
+  itemIcon: { frameWidth: 32, frameHeight: 32 },
   bedBlanket: { frameWidth: 128, frameHeight: 128 }
 } as const;

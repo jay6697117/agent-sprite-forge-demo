@@ -5,6 +5,13 @@ import { CROPS } from '../config/crops';
 import type { FriendshipSave, Inventory, OrderSave, UnlockSave, UpgradeSave } from '../types/GameState';
 import type { ToolId } from '../types/MapData';
 
+type ScreenBounds = {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+};
+
 type UiState = {
   day: number;
   gold: number;
@@ -18,6 +25,12 @@ type UiState = {
   unlocks: UnlockSave;
   tool: ToolId;
   prompt: string;
+  playerBounds?: ScreenBounds;
+};
+
+type HudPanel = {
+  container: Phaser.GameObjects.Container;
+  bounds: ScreenBounds;
 };
 
 type ToolUi = {
@@ -25,10 +38,18 @@ type ToolUi = {
   key: string;
   name: string;
   box: Phaser.GameObjects.Rectangle;
+  icon: Phaser.GameObjects.Image;
+  keyText: Phaser.GameObjects.Text;
   text: Phaser.GameObjects.Text;
 };
 
-const toolDefinitions: Array<Omit<ToolUi, 'box' | 'text'>> = [
+type ToolIconSource = {
+  texture: string;
+  frame: number;
+  size: number;
+};
+
+const toolDefinitions: Array<Omit<ToolUi, 'box' | 'icon' | 'keyText' | 'text'>> = [
   { id: 'turnip_seed', key: '1', name: '萝卜' },
   { id: 'wheat_seed', key: '2', name: '小麦' },
   { id: 'strawberry_seed', key: '3', name: '草莓' },
@@ -46,6 +67,7 @@ export class UIScene extends Phaser.Scene {
   private toolbarPanel!: Phaser.GameObjects.Container;
   private inventoryPanel!: Phaser.GameObjects.Container;
   private helpPanel!: Phaser.GameObjects.Container;
+  private introPanel!: Phaser.GameObjects.Container;
   private dayText!: Phaser.GameObjects.Text;
   private goldText!: Phaser.GameObjects.Text;
   private energyText!: Phaser.GameObjects.Text;
@@ -63,6 +85,9 @@ export class UIScene extends Phaser.Scene {
   private fullHudOpen = false;
   private helpOpen = false;
   private orderBoardOpen = false;
+  private introOpen = false;
+  private playerBounds?: ScreenBounds;
+  private hudPanels: HudPanel[] = [];
   private hudKeysDown = new Set<string>();
 
   constructor() {
@@ -75,6 +100,9 @@ export class UIScene extends Phaser.Scene {
     this.fullHudOpen = false;
     this.helpOpen = false;
     this.orderBoardOpen = false;
+    this.introOpen = true;
+    this.playerBounds = undefined;
+    this.hudPanels = [];
     this.hudKeysDown.clear();
 
     this.createStatusPanel();
@@ -82,6 +110,7 @@ export class UIScene extends Phaser.Scene {
     this.createToolBar();
     this.createPromptBubble();
     this.createMessageBubble();
+    this.createIntroPanel();
     this.registerHudKeys();
     this.applyHudVisibility();
 
@@ -100,8 +129,8 @@ export class UIScene extends Phaser.Scene {
   private createStatusPanel() {
     const compactChildren: Phaser.GameObjects.GameObject[] = [];
     compactChildren.push(
-      this.add.rectangle(16, 14, 270, 42, 0x4b2d1a, 0.82).setOrigin(0).setStrokeStyle(2, 0xf4d28b, 0.9),
-      this.add.rectangle(22, 20, 258, 30, 0x6b4424, 0.6).setOrigin(0).setStrokeStyle(1, 0x2d1a10, 0.65),
+      this.add.rectangle(16, 14, 270, 42, 0x3f2818, 0.72).setOrigin(0).setStrokeStyle(2, 0xf4d28b, 0.88),
+      this.add.rectangle(22, 20, 258, 30, 0x6b4424, 0.5).setOrigin(0).setStrokeStyle(1, 0x2d1a10, 0.55),
       this.addIcon(32, 35, 0, 17),
       this.addIcon(100, 35, 1, 16),
       this.addIcon(164, 35, 2, 16)
@@ -111,110 +140,165 @@ export class UIScene extends Phaser.Scene {
     this.compactEnergyText = this.panelText(176, 26, 13, '#a9f0aa');
     compactChildren.push(this.compactDayText, this.compactGoldText, this.compactEnergyText);
     this.compactStatusPanel = this.add.container(0, 0, compactChildren).setDepth(900);
+    this.registerHudPanel(this.compactStatusPanel, { left: 16, top: 14, right: 286, bottom: 56 });
 
     const fullChildren: Phaser.GameObjects.GameObject[] = [];
     fullChildren.push(
-      this.add.rectangle(16, 14, 288, 118, 0x4b2d1a, 0.88).setOrigin(0).setStrokeStyle(3, 0xf4d28b, 0.95),
-      this.add.rectangle(24, 22, 272, 102, 0x6b4424, 0.72).setOrigin(0).setStrokeStyle(1, 0x2d1a10, 0.75),
-      this.addIcon(30, 40, 0, 22),
-      this.addIcon(30, 64, 1, 19),
-      this.addIcon(30, 87, 2, 19),
-      this.addIcon(30, 109, 5, 18)
+      this.add.rectangle(16, 14, 286, 112, 0x2f2118, 0.88).setOrigin(0).setStrokeStyle(3, 0xeac06f, 0.96),
+      this.add.rectangle(24, 22, 270, 96, 0x5b3a22, 0.62).setOrigin(0).setStrokeStyle(1, 0x160d08, 0.58),
+      this.addIcon(38, 42, 5, 19),
+      this.add.text(62, 31, '农场状态', {
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '17px',
+        color: '#fff4c7',
+        stroke: '#201109',
+        strokeThickness: 4
+      }),
+      this.add.rectangle(42, 58, 222, 2, 0xf4d28b, 0.48).setOrigin(0),
+      this.addIcon(42, 76, 0, 18),
+      this.addIcon(42, 100, 1, 17),
+      this.addIcon(160, 76, 2, 17),
+      this.addIcon(160, 100, 5, 17)
     );
-    this.dayText = this.panelText(48, 30, 18, '#fff0b8');
-    this.goldText = this.panelText(48, 55, 15, '#ffe27a');
-    this.energyText = this.panelText(48, 78, 15, '#a9f0aa');
-    this.reputationText = this.panelText(48, 101, 14, '#d8c7ff');
+    this.dayText = this.panelText(62, 66, 14, '#fff0b8');
+    this.goldText = this.panelText(62, 90, 14, '#ffe27a');
+    this.energyText = this.panelText(180, 66, 14, '#a9f0aa');
+    this.reputationText = this.panelText(180, 90, 13, '#d8c7ff');
     fullChildren.push(this.dayText, this.goldText, this.energyText, this.reputationText);
     this.fullStatusPanel = this.add.container(0, 0, fullChildren).setDepth(900);
+    this.registerHudPanel(this.fullStatusPanel, { left: 16, top: 14, right: 302, bottom: 126 });
   }
 
   private createOrderPanel() {
     const children: Phaser.GameObjects.GameObject[] = [];
     children.push(
-      this.add.rectangle(704, 14, 240, 156, 0x5a351f, 0.9).setOrigin(0).setStrokeStyle(3, 0xf4d28b, 0.95),
-      this.addIcon(718, 38, 3, 24),
-      this.add.text(744, 28, '今日订单板', {
+      this.add.rectangle(682, 14, 262, 160, 0x2f2118, 0.88).setOrigin(0).setStrokeStyle(3, 0xeac06f, 0.96),
+      this.add.rectangle(690, 22, 246, 144, 0x5b3a22, 0.6).setOrigin(0).setStrokeStyle(1, 0x160d08, 0.58),
+      this.addIcon(712, 42, 3, 22),
+      this.add.text(742, 30, '今日订单板', {
         fontFamily: 'system-ui, sans-serif',
         fontSize: '18px',
-        color: '#fff0b8',
-        stroke: '#2a170d',
+        color: '#fff4c7',
+        stroke: '#201109',
         strokeThickness: 4
       })
     );
     for (let i = 0; i < 2; i += 1) {
-      const note = this.add.rectangle(722, 58 + i * 50, 200, 42, 0xf1d58e, 0.95).setOrigin(0).setStrokeStyle(2, 0x8b5a2c, 0.95);
-      const text = this.add.text(734, 64 + i * 50, '', {
+      const note = this.add.rectangle(704, 60 + i * 48, 218, 40, 0xf1d58e, 0.94).setOrigin(0).setStrokeStyle(2, 0x8b5a2c, 0.9);
+      const pin = this.add.circle(714, 70 + i * 48, 4, 0xc65f35, 0.95).setStrokeStyle(1, 0x6f2a18, 0.9);
+      const text = this.add.text(726, 65 + i * 48, '', {
         fontFamily: 'system-ui, sans-serif',
-        fontSize: '13px',
+        fontSize: '12px',
         color: '#3b2414',
-        wordWrap: { width: 178 }
+        wordWrap: { width: 184 }
       });
       this.orderTexts.push(text);
-      children.push(note, text);
+      children.push(note, pin, text);
     }
-    children.push(this.add.text(724, 145, '去公告板按 E 交付', {
+    children.push(this.add.text(708, 148, '公告板按 E 交付，Q 单独查看', {
       fontFamily: 'system-ui, sans-serif',
       fontSize: '12px',
       color: '#f7e5b3',
-      stroke: '#2a170d',
+      stroke: '#201109',
       strokeThickness: 3
     }));
     this.orderPanel = this.add.container(0, 0, children).setDepth(900);
+    this.registerHudPanel(this.orderPanel, { left: 682, top: 14, right: 944, bottom: 174 });
   }
 
   private createToolBar() {
     const toolbarChildren: Phaser.GameObjects.GameObject[] = [];
-    toolbarChildren.push(this.add.rectangle(270, 468, 420, 52, 0x4b2d1a, 0.88).setOrigin(0).setStrokeStyle(3, 0xf4d28b, 0.95));
+    toolbarChildren.push(
+      this.add.rectangle(206, 448, 548, 82, 0x2a1b12, 0.9).setOrigin(0).setStrokeStyle(4, 0xeac06f, 0.98),
+      this.add.rectangle(216, 458, 528, 62, 0x5b3a22, 0.62).setOrigin(0).setStrokeStyle(1, 0x160d08, 0.6),
+      this.add.text(232, 433, '工具栏', {
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '13px',
+        color: '#fff0b8',
+        stroke: '#201109',
+        strokeThickness: 3
+      })
+    );
     toolDefinitions.forEach((tool, index) => {
-      const x = 284 + index * 78;
-      const box = this.add.rectangle(x, 476, 66, 36, 0x7b512d, 0.92).setOrigin(0).setStrokeStyle(2, 0xba8a4b, 0.95);
-      const text = this.add.text(x + 33, 494, `${tool.key}\n${tool.name}`, {
+      const x = 232 + index * 100;
+      const selected = index === 0;
+      const iconSource = this.toolIconSource(tool.id);
+      const box = this.add.rectangle(x, 464, 82, 50, selected ? 0xb8793d : 0x68411f, selected ? 0.96 : 0.82)
+        .setOrigin(0)
+        .setStrokeStyle(selected ? 4 : 2, selected ? 0xfff0a0 : 0xba8a4b, selected ? 1 : 0.86);
+      const keyText = this.add.text(x + 11, 474, tool.key, {
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '13px',
+        color: '#fff8d8',
+        stroke: '#201109',
+        strokeThickness: 3
+      }).setOrigin(0.5);
+      const icon = this.add.image(x + 40, 483, iconSource.texture, iconSource.frame).setDisplaySize(iconSource.size, iconSource.size);
+      const text = this.add.text(x + 58, 497, tool.name, {
         fontFamily: 'system-ui, sans-serif',
         fontSize: '12px',
         color: '#fff4cf',
         align: 'center',
-        stroke: '#2a170d',
+        stroke: '#201109',
         strokeThickness: 3
       }).setOrigin(0.5);
-      this.toolItems.push({ ...tool, box, text });
-      toolbarChildren.push(box, text);
+      this.toolItems.push({ ...tool, box, icon, keyText, text });
+      toolbarChildren.push(box, keyText, icon, text);
     });
     this.toolbarPanel = this.add.container(0, 0, toolbarChildren).setDepth(900);
+    this.registerHudPanel(this.toolbarPanel, { left: 206, top: 433, right: 754, bottom: 530 });
 
-    this.inventoryText = this.add.text(316, 426, '', {
+    this.inventoryText = this.add.text(390, 402, '', {
       fontFamily: 'system-ui, sans-serif',
       fontSize: '12px',
       color: '#fff2c8',
-      stroke: '#2a170d',
-      strokeThickness: 3
+      stroke: '#201109',
+      strokeThickness: 3,
+      lineSpacing: 3,
+      wordWrap: { width: 270 }
     });
     this.inventoryPanel = this.add.container(0, 0, [
-      this.add.rectangle(304, 418, 352, 42, 0x4b2d1a, 0.82).setOrigin(0).setStrokeStyle(2, 0xf4d28b, 0.9),
+      this.add.rectangle(278, 386, 404, 52, 0x2f2118, 0.9).setOrigin(0).setStrokeStyle(2, 0xeac06f, 0.94),
+      this.add.rectangle(286, 394, 388, 36, 0x5b3a22, 0.58).setOrigin(0).setStrokeStyle(1, 0x160d08, 0.54),
+      this.addIcon(306, 412, 4, 22),
+      this.add.text(330, 402, '背包', {
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '14px',
+        color: '#fff0b8',
+        stroke: '#201109',
+        strokeThickness: 3
+      }),
       this.inventoryText
     ]).setDepth(900);
+    this.registerHudPanel(this.inventoryPanel, { left: 278, top: 386, right: 682, bottom: 438 });
 
-    const helpText = this.add.text(28, 154, [
-      ControlText.move,
-      ControlText.interact,
-      ControlText.tools,
-      ControlText.shop,
-      ControlText.zoom,
-      ControlText.hud,
-      `${ControlText.help}，${ControlText.orders}`,
-      'R 重置'
+    const helpText = this.add.text(36, 172, [
+      `${ControlText.move}        E 操作/对话`,
+      '1-5 切换工具         Tab 完整 HUD',
+      'B 买种 / V 卖作物     U 买升级',
+      'H 帮助 / Q 订单       +/- 缩放 / R 重置'
     ], {
       fontFamily: 'system-ui, sans-serif',
       fontSize: '12px',
       color: '#f6e6bd',
-      stroke: '#2b1a12',
+      stroke: '#201109',
       strokeThickness: 3,
-      lineSpacing: 3
+      lineSpacing: 8
     });
     this.helpPanel = this.add.container(0, 0, [
-      this.add.rectangle(16, 142, 326, 150, 0x4b2d1a, 0.84).setOrigin(0).setStrokeStyle(2, 0xf4d28b, 0.9),
+      this.add.rectangle(16, 138, 338, 142, 0x2f2118, 0.88).setOrigin(0).setStrokeStyle(2, 0xeac06f, 0.94),
+      this.add.rectangle(24, 146, 322, 126, 0x5b3a22, 0.56).setOrigin(0).setStrokeStyle(1, 0x160d08, 0.54),
+      this.addIcon(36, 160, 4, 18),
+      this.add.text(60, 149, '操作帮助', {
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '16px',
+        color: '#fff4c7',
+        stroke: '#201109',
+        strokeThickness: 4
+      }),
       helpText
     ]).setDepth(900);
+    this.registerHudPanel(this.helpPanel, { left: 16, top: 138, right: 354, bottom: 280 });
   }
 
   private createPromptBubble() {
@@ -241,6 +325,86 @@ export class UIScene extends Phaser.Scene {
     this.messagePanel = this.add.container(0, 0, [this.messageBg, this.messageText]).setDepth(1001).setVisible(false);
   }
 
+  private createIntroPanel() {
+    const overlay = this.add.rectangle(0, 0, 960, 540, 0x000000, 0.46).setOrigin(0).setInteractive();
+    overlay.on('pointerdown', () => this.closeIntroPanel());
+    const buttonBg = this.add.rectangle(480, 442, 190, 42, 0x2f7d46, 0.96).setStrokeStyle(3, 0xf4d28b, 0.95);
+    const buttonText = this.add.text(480, 442, '开始游戏', {
+      fontFamily: 'system-ui, sans-serif',
+      fontSize: '18px',
+      color: '#fff8d8',
+      stroke: '#15351e',
+      strokeThickness: 4
+    }).setOrigin(0.5);
+    buttonBg.setInteractive({ useHandCursor: true });
+    buttonText.setInteractive({ useHandCursor: true });
+    buttonBg.on('pointerdown', () => this.closeIntroPanel());
+    buttonText.on('pointerdown', () => this.closeIntroPanel());
+
+    const body = this.add.text(188, 138, [
+      '玩法目标',
+      '种下作物、浇水、成熟后收获；完成订单赚钱，去商人那里买种子和升级。',
+      '',
+      '基础流程',
+      '1. 用 1 / 2 / 3 选择种子，在田地旁按 E 播种。',
+      '2. 用 4 选择水壶，给作物浇水；成熟后用 5 选择手来收获。',
+      '3. 去公告板交订单；去商人旁按 B 买、V 卖、U 升级。'
+    ], {
+      fontFamily: 'system-ui, sans-serif',
+      fontSize: '15px',
+      color: '#fff3cf',
+      stroke: '#2a170d',
+      strokeThickness: 3,
+      lineSpacing: 6,
+      wordWrap: { width: 584 }
+    });
+    const keys = this.add.text(188, 330, [
+      '常用按键：WASD / 方向键移动，E 操作，Tab 展开 HUD，H 帮助，Q 订单板。',
+      '地图缩放：+ / - / 鼠标滚轮，0 复位。卡住或想重开时按 R 重置。',
+      '关闭说明：点击“开始游戏”，或按 Enter / Space / Esc。'
+    ], {
+      fontFamily: 'system-ui, sans-serif',
+      fontSize: '14px',
+      color: '#f8e7b9',
+      stroke: '#2a170d',
+      strokeThickness: 3,
+      lineSpacing: 7,
+      wordWrap: { width: 584 }
+    });
+
+    this.introPanel = this.add.container(0, 0, [
+      overlay,
+      this.add.rectangle(480, 270, 660, 414, 0x4b2d1a, 0.96).setStrokeStyle(4, 0xf4d28b, 0.98),
+      this.add.rectangle(480, 270, 626, 380, 0x6b4424, 0.66).setStrokeStyle(2, 0x2d1a10, 0.65),
+      this.add.text(480, 94, '欢迎来到小农场', {
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '28px',
+        color: '#fff0b8',
+        stroke: '#2a170d',
+        strokeThickness: 6
+      }).setOrigin(0.5),
+      this.add.text(480, 120, '先看 30 秒，后面就不会迷路。', {
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '14px',
+        color: '#f7e5b3',
+        stroke: '#2a170d',
+        strokeThickness: 3
+      }).setOrigin(0.5),
+      body,
+      keys,
+      buttonBg,
+      buttonText
+    ]).setDepth(1200).setVisible(true);
+  }
+
+  private closeIntroPanel() {
+    if (!this.introOpen) {
+      return;
+    }
+    this.introOpen = false;
+    this.introPanel.setVisible(false);
+  }
+
   private registerHudKeys() {
     this.input.keyboard?.on('keydown', this.handleHudKeyDown, this);
     this.input.keyboard?.on('keyup', this.handleHudKeyUp, this);
@@ -252,6 +416,14 @@ export class UIScene extends Phaser.Scene {
   }
 
   private handleHudKeyDown(event: KeyboardEvent) {
+    if (this.introOpen) {
+      if (this.introCloseKeyFromEvent(event)) {
+        event.preventDefault();
+        this.closeIntroPanel();
+      }
+      return;
+    }
+
     const hudKey = this.hudKeyFromEvent(event);
     if (!hudKey) {
       return;
@@ -300,6 +472,10 @@ export class UIScene extends Phaser.Scene {
     return '';
   }
 
+  private introCloseKeyFromEvent(event: KeyboardEvent) {
+    return event.code === 'Enter' || event.code === 'Space' || event.code === 'Escape' || event.key === ' ';
+  }
+
   private applyHudVisibility() {
     this.compactStatusPanel.setVisible(!this.fullHudOpen);
     this.fullStatusPanel.setVisible(this.fullHudOpen);
@@ -307,16 +483,18 @@ export class UIScene extends Phaser.Scene {
     this.toolbarPanel.setVisible(true);
     this.inventoryPanel.setVisible(this.fullHudOpen);
     this.helpPanel.setVisible(this.helpOpen);
+    this.updateHudTransparency();
   }
 
   private updateUi(state: UiState) {
+    this.playerBounds = state.playerBounds;
     this.compactDayText.setText(`第${state.day}天`);
     this.compactGoldText.setText(`${state.gold}`);
     this.compactEnergyText.setText(`${state.energy}/${state.maxEnergy}`);
     this.dayText.setText(`第 ${state.day} 天`);
     this.goldText.setText(`金币 ${state.gold}`);
     this.energyText.setText(`体力 ${state.energy}/${state.maxEnergy}`);
-    this.reputationText.setText(`声望 ${state.reputation}  商人好感 ${state.friendship.seedSeller}`);
+    this.reputationText.setText(`声望 ${state.reputation}  好感 ${state.friendship.seedSeller}`);
     this.inventoryText.setText([
       `种子：萝卜 ${state.inventory.turnipSeed}  小麦 ${state.inventory.wheatSeed}  草莓 ${state.inventory.strawberrySeed}`,
       `作物：萝卜 ${state.inventory.turnipCrop}  小麦 ${state.inventory.wheatCrop}  草莓 ${state.inventory.strawberryCrop}`
@@ -329,9 +507,12 @@ export class UIScene extends Phaser.Scene {
 
     for (const item of this.toolItems) {
       const selected = item.id === state.tool;
-      item.box.setFillStyle(selected ? 0xb8793d : 0x7b512d, selected ? 1 : 0.92);
-      item.box.setStrokeStyle(selected ? 4 : 2, selected ? 0xfff0a0 : 0xba8a4b, 0.95);
-      item.text.setScale(selected ? 1.08 : 1);
+      item.box.setFillStyle(selected ? 0xb8793d : 0x68411f, selected ? 0.98 : 0.82);
+      item.box.setStrokeStyle(selected ? 4 : 2, selected ? 0xfff0a0 : 0xba8a4b, selected ? 1 : 0.86);
+      item.icon.setScale(selected ? 1.04 : 1);
+      item.icon.setAlpha(selected ? 1 : 0.88);
+      item.keyText.setScale(selected ? 1.08 : 1);
+      item.text.setScale(selected ? 1.06 : 1);
     }
 
     const prompt = state.prompt.trim();
@@ -361,6 +542,40 @@ export class UIScene extends Phaser.Scene {
         onComplete: () => this.messagePanel.setVisible(false)
       });
     });
+  }
+
+  private registerHudPanel(container: Phaser.GameObjects.Container, bounds: ScreenBounds) {
+    this.hudPanels.push({ container, bounds });
+  }
+
+  private updateHudTransparency() {
+    for (const panel of this.hudPanels) {
+      if (!panel.container.visible || !this.playerBounds) {
+        panel.container.setAlpha(1);
+        continue;
+      }
+      panel.container.setAlpha(this.boundsOverlap(panel.bounds, this.playerBounds) ? 0.56 : 1);
+    }
+  }
+
+  private boundsOverlap(a: ScreenBounds, b: ScreenBounds) {
+    return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+  }
+
+  private toolIconSource(toolId: ToolId): ToolIconSource {
+    if (toolId === 'turnip_seed') {
+      return { texture: AssetKey.cropTurnip, frame: 3, size: 30 };
+    }
+    if (toolId === 'wheat_seed') {
+      return { texture: AssetKey.cropTurnip, frame: 7, size: 30 };
+    }
+    if (toolId === 'strawberry_seed') {
+      return { texture: AssetKey.cropTurnip, frame: 11, size: 30 };
+    }
+    if (toolId === 'watering_can') {
+      return { texture: AssetKey.itemsFarming, frame: 1, size: 32 };
+    }
+    return { texture: AssetKey.itemsFarming, frame: 0, size: 32 };
   }
 
   private addIcon(x: number, y: number, frame: number, size: number) {

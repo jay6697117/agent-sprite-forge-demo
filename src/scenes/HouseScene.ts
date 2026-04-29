@@ -22,6 +22,13 @@ type HouseSceneData = {
   spawnOverride?: SpawnOverride;
 };
 
+type ScreenBounds = {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+};
+
 const BedsidePosition = { x: 142, y: 264 };
 const SleepPosition = { x: 124, y: 138 };
 const WakePosition = { x: 152, y: 266 };
@@ -275,7 +282,8 @@ export class HouseScene extends Phaser.Scene {
     if (this.player.facing === 'right') reachPoint.x += 44;
     if (this.player.facing === 'up') reachPoint.y -= 44;
     if (this.player.facing === 'down') reachPoint.y += 44;
-    return this.interaction.findZone(reachPoint);
+    const reachedZone = this.interaction.findZone(reachPoint);
+    return reachedZone?.kind === 'bed_sleep' ? undefined : reachedZone;
   }
 
   private ensureUiScene() {
@@ -301,8 +309,26 @@ export class HouseScene extends Phaser.Scene {
       friendship: this.state.friendship,
       unlocks: this.state.unlocks,
       tool: this.player.selectedTool,
-      prompt: InteractionSystem.promptFor(this.activeZone)
+      prompt: InteractionSystem.promptFor(this.activeZone),
+      playerBounds: this.playerScreenBounds()
     });
+  }
+
+  private playerScreenBounds(): ScreenBounds | undefined {
+    if (!this.player) {
+      return undefined;
+    }
+
+    const camera = this.cameras.main;
+    const zoom = camera.zoom;
+    const screenX = camera.x + (this.player.x - camera.worldView.x) * zoom;
+    const screenY = camera.y + (this.player.y - camera.worldView.y) * zoom;
+    return {
+      left: screenX - 34 * zoom,
+      top: screenY - 42 * zoom,
+      right: screenX + 34 * zoom,
+      bottom: screenY + 36 * zoom
+    };
   }
 
   private showMessage(message: string) {
@@ -345,7 +371,7 @@ function createFallbackHouseCollision(): CollisionData {
 function createFallbackHouseZones(): ZoneData {
   return {
     zones: [
-      { id: 'bed_sleep', kind: 'bed_sleep', type: 'rect', x: 72, y: 232, w: 150, h: 58, prompt: '按 E 上床睡觉并进入下一天' },
+      { id: 'bed_sleep', kind: 'bed_sleep', type: 'rect', x: 92, y: 224, w: 72, h: 34, prompt: '按 E 上床睡觉并进入下一天' },
       { id: 'exit_house', kind: 'exit_house', type: 'rect', x: 240, y: 386, w: 160, h: 90, prompt: '按 E 出门' }
     ],
     fieldPlots: []

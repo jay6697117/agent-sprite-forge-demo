@@ -371,7 +371,7 @@ function createFallbackHouseCollision(): CollisionData {
 function createFallbackHouseZones(): ZoneData {
   return {
     zones: [
-      { id: 'bed_sleep', kind: 'bed_sleep', type: 'rect', x: 92, y: 224, w: 72, h: 34, prompt: '按 E 上床睡觉并进入下一天' },
+      { id: 'bed_sleep', kind: 'bed_sleep', type: 'rect', x: 66, y: 212, w: 150, h: 70, prompt: '按 E 上床睡觉并进入下一天' },
       { id: 'exit_house', kind: 'exit_house', type: 'rect', x: 240, y: 386, w: 160, h: 90, prompt: '按 E 出门' }
     ],
     fieldPlots: []

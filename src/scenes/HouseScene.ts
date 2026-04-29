@@ -6,6 +6,7 @@ import { CollisionSystem } from '../systems/CollisionSystem';
 import { advanceDayState } from '../systems/DaySystem';
 import { EffectSystem } from '../systems/EffectSystem';
 import { InteractionSystem } from '../systems/InteractionSystem';
+import { startBackgroundMusic } from '../systems/MusicSystem';
 import { SaveSystem } from '../systems/SaveSystem';
 import type { GameSave } from '../types/GameState';
 import type { CollisionData, Facing, Zone, ZoneData } from '../types/MapData';
@@ -55,6 +56,7 @@ export class HouseScene extends Phaser.Scene {
 
     this.farmSpawnOverride = data.farmSpawnOverride ?? this.defaultFarmSpawn(farmZones);
     this.ensureUiScene();
+    startBackgroundMusic(this);
     this.add.image(0, 0, AssetKey.houseBase).setOrigin(0).setDisplaySize(collision.mapSize.width, collision.mapSize.height).setDepth(-1000);
     this.createSleepBlanket();
     this.physics.world.setBounds(0, 0, collision.mapSize.width, collision.mapSize.height);

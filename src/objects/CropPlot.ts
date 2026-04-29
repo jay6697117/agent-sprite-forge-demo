@@ -10,6 +10,14 @@ const cropRows: Record<CropId, number> = {
   strawberry: 2
 };
 
+const cropFrameCenterY: Record<CropId, number[]> = {
+  turnip: [91.5, 81, 71.5, 68.5],
+  wheat: [91.5, 75, 66.5, 64.5],
+  strawberry: [92.5, 79, 75, 72.5]
+};
+
+const cropFrameSize = 128;
+
 export class CropPlot {
   readonly bounds: Phaser.Geom.Rectangle;
   readonly center: { x: number; y: number };
@@ -29,7 +37,7 @@ export class CropPlot {
     this.crop = scene.add.sprite(this.center.x, this.center.y, AssetKey.cropTurnip, 0);
     this.crop.setDisplaySize(data.w, data.h);
     this.water = scene.add.rectangle(this.center.x, this.center.y, data.w - 6, data.h - 6, 0x7cc9ff, 0.3);
-    this.highlight = scene.add.rectangle(this.center.x, this.center.y, data.w + 8, data.h + 8);
+    this.highlight = scene.add.rectangle(this.center.x, this.center.y, data.w, data.h);
 
     this.base.setDepth(this.center.y - 2);
     this.crop.setDepth(this.center.y + 1);
@@ -53,11 +61,18 @@ export class CropPlot {
     this.water.setVisible(this.state.cropId !== null && this.state.wateredToday);
     if (this.state.cropId) {
       const crop = CROPS[this.state.cropId];
-      this.crop.setFrame(cropRows[this.state.cropId] * 4 + Math.min(this.state.stage, crop.maxStage));
+      const stage = Math.min(this.state.stage, crop.maxStage);
+      this.crop.setFrame(cropRows[this.state.cropId] * 4 + stage);
+      this.crop.setPosition(this.center.x, this.cropY(this.state.cropId, stage));
       this.crop.setTint(crop.tint);
     } else {
+      this.crop.setPosition(this.center.x, this.center.y);
       this.crop.clearTint();
     }
+  }
+
+  private cropY(cropId: CropId, stage: number) {
+    return this.center.y + (0.5 - cropFrameCenterY[cropId][stage] / cropFrameSize) * this.data.h;
   }
 
   destroy() {

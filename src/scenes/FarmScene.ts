@@ -9,6 +9,7 @@ import { EffectSystem } from '../systems/EffectSystem';
 import { FarmingSystem, type FarmingAction } from '../systems/FarmingSystem';
 import { InteractionSystem } from '../systems/InteractionSystem';
 import { InventorySystem } from '../systems/InventorySystem';
+import { startBackgroundMusic } from '../systems/MusicSystem';
 import { OrderSystem } from '../systems/OrderSystem';
 import { SaveSystem } from '../systems/SaveSystem';
 import { ShopSystem } from '../systems/ShopSystem';
@@ -57,6 +58,7 @@ export class FarmScene extends Phaser.Scene {
     const props = (this.cache.json.get(AssetKey.farmProps) as PropData | undefined) ?? createFallbackProps();
 
     this.ensureUiScene();
+    startBackgroundMusic(this);
     this.loadProps(props, () => this.buildWorld(collision, zones, props, data));
   }
 

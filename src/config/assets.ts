@@ -14,7 +14,8 @@ export const AssetKey = {
   houseBase: 'house-base',
   bedBlanket: 'bed-blanket',
   houseCollision: 'house-collision',
-  houseZones: 'house-zones'
+  houseZones: 'house-zones',
+  farmBgm: 'farm-bgm'
 } as const;
 
 export const AssetPath = {
@@ -33,7 +34,8 @@ export const AssetPath = {
   houseBase: '/assets/map/house_v1/house-base.png',
   bedBlanket: '/assets/sprites/bed_blanket_v1/sheet-transparent.png',
   houseCollision: '/data/house-v1-collision.json',
-  houseZones: '/data/house-v1-zones.json'
+  houseZones: '/data/house-v1-zones.json',
+  farmBgm: '/assets/audio/cozy-farm-loop.wav'
 } as const;
 
 export const FrameSize = {

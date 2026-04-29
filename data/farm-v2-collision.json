@@ -43,122 +43,154 @@
     {
       "id": "farmhouse-upper-body",
       "type": "rect",
-      "x": 66,
-      "y": 162,
-      "w": 248,
-      "h": 96
+      "x": 62,
+      "y": 156,
+      "w": 256,
+      "h": 100
     },
     {
       "id": "farmhouse-lower-left",
       "type": "rect",
-      "x": 66,
-      "y": 258,
-      "w": 88,
-      "h": 60
+      "x": 62,
+      "y": 256,
+      "w": 92,
+      "h": 62
     },
     {
       "id": "farmhouse-lower-right",
       "type": "rect",
       "x": 226,
-      "y": 258,
-      "w": 88,
-      "h": 60
+      "y": 256,
+      "w": 92,
+      "h": 62
     },
     {
       "id": "seed-shop-body",
       "type": "rect",
-      "x": 900,
-      "y": 226,
-      "w": 260,
-      "h": 86
+      "x": 890,
+      "y": 210,
+      "w": 280,
+      "h": 104
     },
     {
       "id": "notice-board-body",
       "type": "rect",
-      "x": 548,
-      "y": 262,
-      "w": 128,
-      "h": 42
+      "x": 552,
+      "y": 246,
+      "w": 116,
+      "h": 62
     },
     {
       "id": "well-base",
-      "type": "ellipse",
-      "x": 710,
-      "y": 480,
-      "rx": 48,
-      "ry": 34
+      "type": "rect",
+      "x": 662,
+      "y": 466,
+      "w": 96,
+      "h": 58
     },
     {
       "id": "pond-water-top",
       "type": "rect",
       "x": 884,
-      "y": 548,
-      "w": 192,
+      "y": 520,
+      "w": 204,
       "h": 42
     },
     {
       "id": "pond-water-upper-mid",
       "type": "rect",
-      "x": 848,
-      "y": 590,
-      "w": 264,
-      "h": 48
+      "x": 838,
+      "y": 562,
+      "w": 296,
+      "h": 52
     },
     {
       "id": "pond-water-center",
       "type": "rect",
-      "x": 820,
-      "y": 638,
-      "w": 320,
-      "h": 58
+      "x": 802,
+      "y": 614,
+      "w": 358,
+      "h": 70
     },
     {
       "id": "pond-water-lower-mid",
       "type": "rect",
-      "x": 850,
-      "y": 696,
-      "w": 260,
-      "h": 48
+      "x": 830,
+      "y": 684,
+      "w": 300,
+      "h": 54
     },
     {
       "id": "pond-water-bottom",
       "type": "rect",
-      "x": 890,
-      "y": 744,
-      "w": 180,
-      "h": 36
+      "x": 888,
+      "y": 738,
+      "w": 186,
+      "h": 42
     },
     {
       "id": "tree-pond-trunk",
-      "type": "ellipse",
-      "x": 830,
-      "y": 662,
-      "rx": 40,
-      "ry": 28
+      "type": "rect",
+      "x": 790,
+      "y": 634,
+      "w": 80,
+      "h": 58
     },
     {
       "id": "tree-forest-trunk",
-      "type": "ellipse",
-      "x": 1130,
-      "y": 188,
-      "rx": 34,
-      "ry": 24
+      "type": "rect",
+      "x": 1096,
+      "y": 164,
+      "w": 68,
+      "h": 48
     },
     {
       "id": "field-north-fence",
       "type": "rect",
-      "x": 270,
-      "y": 442,
-      "w": 400,
-      "h": 20
+      "x": 266,
+      "y": 438,
+      "w": 408,
+      "h": 26
     },
     {
       "id": "field-south-fence",
       "type": "rect",
-      "x": 270,
-      "y": 812,
-      "w": 400,
-      "h": 20
+      "x": 262,
+      "y": 806,
+      "w": 420,
+      "h": 30
+    },
+    {
+      "id": "flower-garden-north-fence",
+      "type": "rect",
+      "x": 1246,
+      "y": 474,
+      "w": 246,
+      "h": 36
+    },
+    {
+      "id": "flower-garden-west-fence",
+      "type": "rect",
+      "x": 1198,
+      "y": 542,
+      "w": 38,
+      "h": 224
+    },
+    {
+      "id": "flower-garden-east-fence",
+      "type": "rect",
+      "x": 1498,
+      "y": 528,
+      "w": 40,
+      "h": 210
+    },
+    {
+      "id": "flower-garden-south-fence",
+      "type": "rect",
+      "x": 1220,
+      "y": 756,
+      "w": 292,
+      "h": 42
     }
   ]
 }

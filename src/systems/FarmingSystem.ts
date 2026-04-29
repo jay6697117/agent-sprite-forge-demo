@@ -171,6 +171,6 @@ export class FarmingSystem {
       }
     }
 
-    return bestDistance <= 58 ? bestPlot : undefined;
+    return bestDistance <= 42 ? bestPlot : undefined;
   }
 }
